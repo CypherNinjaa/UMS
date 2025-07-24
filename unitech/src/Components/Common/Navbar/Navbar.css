@@ -1,0 +1,85 @@
+/* Main navbar styling */
+.custom-navbar {
+	background: linear-gradient(135deg, #2c503d 0%, #3498db 100%);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	padding: 1rem 0;
+	z-index: 1000;
+}
+
+/* University logo styling */
+.custom-navbar .navbar-brand {
+	font-size: 1.5rem;
+	font-weight: 700;
+	transition: all 0.3s ease;
+}
+
+.custom-navbar .navbar-brand:hover {
+	transform: scale(1.05);
+	color: #f8f9fa ;
+}
+
+/* Navigation components styling */
+.nav-item {
+	font-weight: 500;
+	margin: 0 0.5rem;
+	padding: 0.5rem 1rem;
+	border-radius: 25px;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+/* Hover effects  on navigation items */
+.nav-item:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	transform: translateY(-2px);
+	color: #ffffff !important;
+}
+
+/* Active navigation item */
+.nav-item.active {
+	background-color: rgba(255, 255, 255, 0.2);
+	color: #ffffff !important;
+}
+
+/* Login button styling */
+.login-btn {
+	border: 2px solid #ffffff;
+	border-radius: 25px;
+	padding: 0.5rem 1.5rem;
+	font-weight: 600;
+	transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+	background-color: #ffffff;
+	color: #3498db !important;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991px) {
+	.custom-navbar .navbar-nav {
+		text-align: center;
+		padding: 1rem 0;
+	}
+
+	.nav-item {
+		margin: 0.25rem 0;
+	}
+
+	.login-btn {
+		margin-top: 1rem;
+		width: 100%;
+	}
+}
+
+/* Animation for mobile menu toggle */
+.custom-navbar .navbar-toggler {
+	border: none;
+	padding: 0.25rem 0.5rem;
+}
+
+.custom-navbar .navbar-toggler:focus {
+	box-shadow: none;
+}
