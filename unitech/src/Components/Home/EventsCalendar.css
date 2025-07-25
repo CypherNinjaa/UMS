@@ -1,0 +1,245 @@
+.events-section {
+	background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+	min-height: 100vh;
+}
+
+/* Ensure all text is visible with proper contrast */
+.events-section * {
+	text-shadow: none !important;
+}
+
+.events-section p,
+.events-section span,
+.events-section h1,
+.events-section h2,
+.events-section h3,
+.events-section h4,
+.events-section h5,
+.events-section h6 {
+	color: #2c3e50 !important;
+}
+
+/* Section Header Styles */
+.section-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #2c3e50 !important;
+	margin-bottom: 1rem;
+}
+
+.section-subtitle {
+	font-size: 1.1rem;
+	color: #495057 !important;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+/* Events List Styles */
+.events-title {
+	color: #2c3e50;
+	font-weight: 600;
+	border-bottom: 3px solid #007bff;
+	padding-bottom: 0.5rem;
+	display: inline-block;
+}
+
+.event-card {
+	border: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 14px;
+	transition: all 0.3s ease;
+	overflow: hidden;
+}
+
+.event-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.event-title {
+	color: #2c3e50 !important;
+	font-weight: 600;
+}
+
+.event-description {
+	font-size: 0.95rem;
+	line-height: 1.5;
+	color: #495057 !important;
+}
+
+/* Event Details Styles */
+.event-details {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.detail-item {
+	display: flex;
+	align-items: center;
+	color: #495057 !important;
+	font-size: 0.9rem;
+}
+
+.detail-icon {
+	margin-right: 0.5rem;
+	color: #007bff;
+}
+
+.register-btn {
+	padding: 0.75rem 2rem;
+	font-weight: 600;
+	border-radius: 25px;
+	transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Gallery Card Styles */
+.gallery-card {
+	border: none;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+.gallery-header {
+	background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+	color: white;
+	text-align: center;
+	padding: 1rem;
+}
+
+.gallery-title {
+	font-weight: 600;
+}
+
+/* Campus Carousel Styles */
+.campus-carousel {
+	height: 400px;
+}
+
+.carousel-image-container {
+	position: relative;
+	height: 400px;
+	overflow: hidden;
+}
+
+.carousel-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.carousel-image:hover {
+	transform: scale(1.05);
+}
+
+.carousel-overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+	color: white;
+	padding: 2rem 1.5rem 1.5rem;
+	transform: translateY(100%);
+	transition: transform 0.3s ease;
+}
+
+.carousel-item:hover .carousel-overlay {
+	transform: translateY(0);
+}
+
+.carousel-content {
+	text-align: center;
+}
+
+.carousel-title {
+	font-size: 1.2rem;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+	color: #fff;
+}
+
+.carousel-description {
+	font-size: 0.9rem;
+	margin: 0;
+	opacity: 0.9;
+	line-height: 1.4;
+}
+
+/* Custom Carousel Controls */
+.campus-carousel .carousel-control-prev,
+.campus-carousel .carousel-control-next {
+	width: 15%;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.campus-carousel:hover .carousel-control-prev,
+.campus-carousel:hover .carousel-control-next {
+	opacity: 1;
+}
+
+.campus-carousel .carousel-control-prev-icon,
+.campus-carousel .carousel-control-next-icon {
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 50%;
+	padding: 15px;
+	width: 40px;
+	height: 40px;
+}
+
+/* Custom Carousel Indicators */
+.campus-carousel .carousel-indicators {
+	bottom: 15px;
+}
+
+.campus-carousel .carousel-indicators [data-bs-target] {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	margin: 0 4px;
+	background-color: rgba(255, 255, 255, 0.5);
+	border: none;
+}
+
+.campus-carousel .carousel-indicators .active {
+	background-color: #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.section-title {
+		font-size: 2rem;
+	}
+
+	.event-details {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.detail-item {
+		justify-content: flex-start;
+	}
+
+	.register-btn {
+		width: 100%;
+		margin-top: 1rem;
+	}
+}
+
+@media (max-width: 576px) {
+	.events-section {
+		padding: 2rem 0;
+	}
+
+	.section-title {
+		font-size: 1.75rem;
+	}
+}
