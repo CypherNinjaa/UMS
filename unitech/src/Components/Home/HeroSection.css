@@ -1,0 +1,222 @@
+/* Main hero section with gradient background */
+.hero-section {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	position: relative;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+/* Overlay for better text contrast */
+.hero-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 1;
+}
+
+/* Hero content container */
+.hero-content {
+	position: relative;
+	z-index: 2;
+	color: white;
+}
+
+/* Main hero title */
+.hero-title {
+	font-size: 3.5rem;
+	font-weight: 700;
+	margin-bottom: 1.5rem;
+	line-height: 1.2;
+	animation: fadeInUp 1s ease-out;
+}
+
+/* Hero subtitle */
+.hero-subtitle {
+	font-size: 1.25rem;
+	margin-bottom: 2rem;
+	line-height: 1.6;
+	opacity: 0.9;
+	animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* University highlights section */
+.hero-highlights {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	margin-bottom: 2.5rem;
+	animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.highlight-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: 600;
+}
+
+.highlight-icon {
+	color: #ffd700;
+	font-size: 1.2rem;
+}
+
+/* Call-to-action buttons */
+.hero-buttons {
+	animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.cta-button {
+	padding: 0.875rem 2rem;
+	border-radius: 50px;
+	font-weight: 600;
+	font-size: 1.1rem;
+	transition: all 0.3s ease;
+	border: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cta-button-outline {
+	padding: 0.875rem 2rem;
+	border-radius: 50px;
+	font-weight: 600;
+	font-size: 1.1rem;
+	transition: all 0.3s ease;
+	border: 2px solid white;
+	background: transparent;
+}
+
+.cta-button-outline:hover {
+	background: white;
+	color: #667eea !important;
+	transform: translateY(-3px);
+	box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Hero image section */
+.hero-image {
+	text-align: center;
+	animation: fadeInRight 1s ease-out 0.8s both;
+}
+
+
+.university-visual {
+	text-align: center;
+	opacity: 0.8;
+}
+
+.main-icon {
+	color: #ffd700;
+	margin-bottom: 1rem;
+	animation: float 3s ease-in-out infinite;
+}
+
+.visual-text {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin: 0;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+	position: absolute;
+	bottom: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 3;
+	animation: bounce 2.4s infinite;
+}
+
+.scroll-arrow {
+	width: 20px;
+	height: 20px;
+	border: 2px solid white;
+	border-left: none;
+	border-top: none;
+	transform: rotate(45deg);
+}
+
+/* Animations generated from claude sonnet 4 */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeInRight {
+	from {
+		opacity: 0;
+		transform: translateX(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-10px);
+	}
+}
+
+@keyframes bounce {
+	0%,
+	20%,
+	50%,
+	80%,
+	100% {
+		transform: translateX(-50%) translateY(0);
+	}
+	40% {
+		transform: translateX(-50%) translateY(-10px);
+	}
+	60% {
+		transform: translateX(-50%) translateY(-5px);
+	}
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.hero-title {
+		font-size: 2.5rem;
+	}
+
+	.hero-subtitle {
+		font-size: 1.1rem;
+	}
+
+	.hero-highlights {
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.cta-button,
+	.cta-button-outline {
+		display: block;
+		width: 100%;
+		margin-bottom: 1rem;
+	}
+
+	.main-icon {
+		font-size: 100px;
+	}
+}
