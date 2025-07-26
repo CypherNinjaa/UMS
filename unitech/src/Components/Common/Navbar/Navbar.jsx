@@ -51,7 +51,7 @@ const NavigationBar = () => {
 
 				{/* menu items yahan par add karna hai */}
 				<Navbar.Collapse id="basic-navbar-nav">
-					<nav className="mx-auto">
+					<Nav className="mx-auto">
 						{/* bhai log yahan par pages ka link add karna hai 
                         if you have done creating the pages */}
 
@@ -63,7 +63,16 @@ const NavigationBar = () => {
 						>
 							Home
 						</Nav.Link>
-					</nav>
+						<Nav.Link
+							as={Link}
+							to="/Contact"
+							onClick={handleNavclick}
+							className="nav-item"
+						>
+							Contact Us
+						</Nav.Link>
+						{/* Add more nav items here */}
+					</Nav>
 				</Navbar.Collapse>
 			</Container>
 		</Navbar>

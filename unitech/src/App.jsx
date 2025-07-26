@@ -7,6 +7,7 @@ import Navbar from "./Components/Common/Navbar/Navbar";
 
 // pages components will imported here-
 import Home from "./Pages/Home";
+import Contact from "./Pages/Contact";
 function App() {
 	return (
 		<>
@@ -16,6 +17,7 @@ function App() {
 					<main className="main-content">
 						<Routes>
 							<Route path="/" element={<Home />} />
+							<Route path="/Contact" element={<Contact />} />
 						</Routes>
 					</main>
 				</div>
