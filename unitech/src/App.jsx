@@ -9,6 +9,8 @@ import Navbar from "./Components/Common/Navbar/Navbar";
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
 import Faculty from "./Pages/Faculty";
+import Programs from "./Pages/Programs";
+import About from "./Pages/About";
 import Footer from "../src/Components/Common/Footer";
 function App() {
 	return (
@@ -19,8 +21,10 @@ function App() {
 					<main className="main-content">
 						<Routes>
 							<Route path="/" element={<Home />} />
-							<Route path="/contact" element={<Contact />} />
+							<Route path="/programs" element={<Programs />} />
 							<Route path="/faculty" element={<Faculty />} />
+							<Route path="/about" element={<About />} />
+							<Route path="/contact" element={<Contact />} />
 						</Routes>
 					</main>
 					<Footer />

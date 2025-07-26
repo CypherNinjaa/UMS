@@ -65,11 +65,27 @@ const NavigationBar = () => {
 						</Nav.Link>
 						<Nav.Link
 							as={Link}
+							to="/Programs"
+							onClick={handleNavclick}
+							className="nav-item"
+						>
+							Programs
+						</Nav.Link>
+						<Nav.Link
+							as={Link}
 							to="/Faculty"
 							onClick={handleNavclick}
 							className="nav-item"
 						>
 							Faculty
+						</Nav.Link>
+						<Nav.Link
+							as={Link}
+							to="/About"
+							onClick={handleNavclick}
+							className="nav-item"
+						>
+							About
 						</Nav.Link>
 						<Nav.Link
 							as={Link}
