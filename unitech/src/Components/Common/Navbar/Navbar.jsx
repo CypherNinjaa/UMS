@@ -65,20 +65,21 @@ const NavigationBar = () => {
 						</Nav.Link>
 						<Nav.Link
 							as={Link}
-							to="/Contact"
-							onClick={handleNavclick}
-							className="nav-item"
-						>
-							Contact Us
-						</Nav.Link>
-						<Nav.Link
-							as={Link}
 							to="/Faculty"
 							onClick={handleNavclick}
 							className="nav-item"
 						>
 							Faculty
 						</Nav.Link>
+						<Nav.Link
+							as={Link}
+							to="/Contact"
+							onClick={handleNavclick}
+							className="nav-item"
+						>
+							Contact Us
+						</Nav.Link>
+
 						{/* Add more nav items here */}
 					</Nav>
 				</Navbar.Collapse>

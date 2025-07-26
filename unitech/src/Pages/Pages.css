@@ -1,0 +1,458 @@
+/* 
+====================================
+PAGES STYLING
+====================================
+Common styles for all page components including:
+- Programs page
+- Faculty page  
+- About page
+- Contact page
+*/
+
+/* Page Header Styles */
+.page-header {
+	padding-top: 100px; /* Account for fixed navbar */
+}
+
+.page-header h1 {
+	font-size: 3rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+
+.page-header .lead {
+	font-size: 1.2rem;
+	opacity: 0.9;
+}
+
+/* ====================================
+   PROGRAMS PAGE STYLES
+   ==================================== */
+
+.programs-page .program-card {
+	border: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 15px;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.programs-page .program-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.programs-page .featured-badge {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	z-index: 2;
+}
+
+.programs-page .featured-text {
+	font-size: 0.8rem;
+	padding: 0.4rem 0.8rem;
+}
+
+.programs-page .program-title {
+	color: #2c3e50;
+	font-weight: 600;
+	font-size: 1.3rem;
+}
+
+.programs-page .program-description {
+	color: #6c757d;
+	line-height: 1.6;
+	margin-bottom: 1rem;
+}
+
+.programs-page .feature-badge {
+	font-size: 0.75rem;
+	padding: 0.3rem 0.6rem;
+	margin: 0.1rem;
+}
+
+.programs-page .stat {
+	text-align: center;
+}
+
+.programs-page .stat-value {
+	font-weight: 600;
+	font-size: 1.1rem;
+	color: #2c3e50;
+	margin-top: 0.5rem;
+}
+
+.programs-page .stat-label {
+	font-size: 0.8rem;
+	color: #6c757d;
+}
+
+.programs-page .tuition-cost {
+	font-size: 1.2rem;
+}
+
+/* ====================================
+   FACULTY PAGE STYLES
+   ==================================== */
+
+.faculty-page .faculty-card {
+	border: none;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 15px;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.faculty-page .faculty-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.faculty-page .faculty-image-container {
+	height: 250px;
+	overflow: hidden;
+	position: relative;
+}
+
+.faculty-page .faculty-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.faculty-page .faculty-card:hover .faculty-image {
+	transform: scale(1.05);
+}
+
+.faculty-page .faculty-name {
+	color: #2c3e50;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.faculty-page .faculty-title {
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+}
+
+.faculty-page .department-badge {
+	font-size: 0.8rem;
+}
+
+.faculty-page .faculty-bio {
+	color: #6c757d;
+	line-height: 1.6;
+	font-size: 0.9rem;
+}
+
+.faculty-page .achievement-badge,
+.faculty-page .course-badge {
+	font-size: 0.75rem;
+	padding: 0.3rem 0.6rem;
+	margin: 0.1rem;
+}
+
+.faculty-page .contact-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.faculty-page .contact-icon {
+	margin-right: 0.7rem;
+	color: #007bff;
+	width: 16px;
+}
+
+/* ====================================
+   ABOUT PAGE STYLES
+   ==================================== */
+
+.about-page .stat-card {
+	transition: all 0.3s ease;
+}
+
+.about-page .stat-card:hover {
+	transform: translateY(-3px);
+}
+
+.about-page .stat-icon {
+	margin-bottom: 1rem;
+}
+
+.about-page .stat-value {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+}
+
+.about-page .stat-label {
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 0.5rem;
+}
+
+.about-page .stat-description {
+	font-size: 0.9rem;
+}
+
+.about-page .mission-card,
+.about-page .vision-card,
+.about-page .values-card {
+	transition: all 0.3s ease;
+}
+
+.about-page .mission-card:hover,
+.about-page .vision-card:hover,
+.about-page .values-card:hover {
+	transform: translateY(-5px);
+}
+
+.about-page .mission-icon,
+.about-page .vision-icon,
+.about-page .values-icon {
+	margin-bottom: 1rem;
+}
+
+.about-page .mission-title,
+.about-page .vision-title,
+.about-page .values-title {
+	color: #2c3e50;
+	font-weight: 600;
+	margin-bottom: 1rem;
+}
+
+.about-page .values-list {
+	list-style: none;
+	padding-left: 0;
+}
+
+.about-page .values-list li {
+	padding: 0.3rem 0;
+	position: relative;
+	padding-left: 1.5rem;
+}
+
+.about-page .values-list li::before {
+	content: "✓";
+	position: absolute;
+	left: 0;
+	color: #28a745;
+	font-weight: bold;
+}
+
+.about-page .history-text {
+	line-height: 1.8;
+	margin-bottom: 1.5rem;
+	color: #2c3e50;
+}
+
+.about-page .history-image {
+	width: 100%;
+	border-radius: 15px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.about-page .timeline-highlights {
+	margin-top: 2rem;
+}
+
+.about-page .timeline-item {
+	padding: 0.5rem 0;
+	border-left: 3px solid #007bff;
+	padding-left: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.about-page .leader-card,
+.about-page .facility-card {
+	transition: all 0.3s ease;
+}
+
+.about-page .leader-card:hover,
+.about-page .facility-card:hover {
+	transform: translateY(-5px);
+}
+
+.about-page .leader-image-container,
+.about-page .facility-image-container {
+	height: 250px;
+	overflow: hidden;
+	border-radius: 15px 15px 0 0;
+}
+
+.about-page .leader-image,
+.about-page .facility-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.about-page .leader-card:hover .leader-image,
+.about-page .facility-card:hover .facility-image {
+	transform: scale(1.05);
+}
+
+.about-page .leader-name,
+.about-page .facility-name {
+	color: #2c3e50;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.about-page .leader-title {
+	color: #007bff;
+	font-weight: 500;
+}
+
+.about-page .leader-bio,
+.about-page .facility-description {
+	color: #6c757d;
+	line-height: 1.6;
+}
+
+.about-page .cta-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+
+.about-page .cta-subtitle {
+	font-size: 1.2rem;
+	opacity: 0.9;
+	margin-bottom: 2rem;
+}
+
+.about-page .cta-button {
+	padding: 1rem 2rem;
+	font-size: 1.1rem;
+	font-weight: 600;
+	border-radius: 50px;
+}
+
+/* ====================================
+   CONTACT PAGE STYLES
+   ==================================== */
+
+.contact-page .contact-form-card,
+.contact-page .contact-info-card,
+.contact-page .emergency-contact-card,
+.contact-page .department-card,
+.contact-page .map-card {
+	border-radius: 15px;
+}
+
+.contact-page .contact-item {
+	display: flex;
+	align-items: flex-start;
+	margin-bottom: 1.5rem;
+}
+
+.contact-page .contact-icon {
+	margin-right: 1rem;
+	margin-top: 0.2rem;
+	font-size: 1.2rem;
+	min-width: 20px;
+}
+
+.contact-page .department-card {
+	transition: all 0.3s ease;
+}
+
+.contact-page .department-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.contact-page .department-name {
+	font-weight: 600;
+	margin-bottom: 1rem;
+}
+
+.contact-page .department-contact-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.8rem;
+	font-size: 0.9rem;
+}
+
+.contact-page .department-icon {
+	margin-right: 0.8rem;
+	color: #007bff;
+	width: 16px;
+}
+
+.contact-page .map-container {
+	border-radius: 0 0 15px 15px;
+	overflow: hidden;
+}
+
+/* Section Titles */
+.section-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #2c3e50;
+	margin-bottom: 1rem;
+}
+
+.section-subtitle {
+	font-size: 1.1rem;
+	color: #6c757d;
+	max-width: 600px;
+	margin: 0 auto 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.page-header h1 {
+		font-size: 2.5rem;
+	}
+
+	.page-header .lead {
+		font-size: 1.1rem;
+	}
+
+	.section-title {
+		font-size: 2rem;
+	}
+
+	.about-page .stat-value {
+		font-size: 2rem;
+	}
+
+	.about-page .cta-title {
+		font-size: 2rem;
+	}
+}
+
+@media (max-width: 576px) {
+	.page-header {
+		padding-top: 80px;
+	}
+
+	.page-header h1 {
+		font-size: 2rem;
+	}
+
+	.section-title {
+		font-size: 1.75rem;
+	}
+
+	.programs-page .program-title {
+		font-size: 1.2rem;
+	}
+
+	.faculty-page .faculty-image-container {
+		height: 200px;
+	}
+
+	.about-page .leader-image-container,
+	.about-page .facility-image-container {
+		height: 200px;
+	}
+}
