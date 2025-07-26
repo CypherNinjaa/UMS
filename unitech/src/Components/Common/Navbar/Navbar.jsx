@@ -95,8 +95,16 @@ const NavigationBar = () => {
 						>
 							Contact Us
 						</Nav.Link>
-
 						{/* Add more nav items here */}
+					</Nav>
+					<Nav className="ms-auto">
+						<Button
+							variant="outline-light"
+							className="login-btn"
+							onClick={() => alert("Login functionality to be implemented")}
+						>
+							Login
+						</Button>
 					</Nav>
 				</Navbar.Collapse>
 			</Container>
