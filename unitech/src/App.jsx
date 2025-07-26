@@ -9,6 +9,7 @@ import Navbar from "./Components/Common/Navbar/Navbar";
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
 import Faculty from "./Pages/Faculty";
+import Footer from "../src/Components/Common/Footer";
 function App() {
 	return (
 		<>
@@ -22,6 +23,7 @@ function App() {
 							<Route path="/faculty" element={<Faculty />} />
 						</Routes>
 					</main>
+					<Footer />
 				</div>
 			</Router>
 		</>

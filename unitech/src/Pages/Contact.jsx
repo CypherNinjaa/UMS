@@ -372,7 +372,7 @@ const Contact = () => {
 							</Card>
 
 							{/* Emergency Contact */}
-							<Card className="emergency-contact-card border-0 shadow">
+							{/* <Card className="emergency-contact-card border-0 shadow">
 								<Card.Header className="bg-danger text-white">
 									<h6 className="mb-0">Emergency Contact</h6>
 								</Card.Header>
@@ -388,8 +388,56 @@ const Contact = () => {
 										Call 112 or Campus Health: +91(8252213697)
 									</p>
 								</Card.Body>
-							</Card>
+							</Card> */}
 						</Col>
+					</Row>
+				</Container>
+			</section>
+
+			{/* Department Contacts Section */}
+			<section className="py-5">
+				<Container>
+					<Row className="text-center mb-5">
+						<Col>
+							<h2 className="section-title">Department Contacts</h2>
+							<p className="section-subtitle">
+								Get in touch with specific departments for specialized
+								assistance
+							</p>
+						</Col>
+					</Row>
+					<Row>
+						{departments.map((dept) => (
+							<Col lg={4} md={6} className="mb-4" key={dept.id}>
+								<Card className="department-card h-100 border-0 shadow-sm">
+									<Card.Body>
+										<h5 className="department-name text-primary">
+											{dept.name}
+										</h5>
+
+										<div className="department-contact-item">
+											<FaPhone className="department-icon" />
+											<span>{dept.phone}</span>
+										</div>
+
+										<div className="department-contact-item">
+											<FaEnvelope className="department-icon" />
+											<span>{dept.email}</span>
+										</div>
+
+										<div className="department-contact-item">
+											<FaClock className="department-icon" />
+											<span>{dept.hours}</span>
+										</div>
+
+										<div className="department-contact-item">
+											<FaMapMarkerAlt className="department-icon" />
+											<span>{dept.location}</span>
+										</div>
+									</Card.Body>
+								</Card>
+							</Col>
+						))}
 					</Row>
 				</Container>
 			</section>
@@ -445,51 +493,6 @@ const Contact = () => {
 								</Button>
 							</p>
 						</Col>
-					</Row>
-				</Container>
-			</section>
-
-			{/* Department Contacts */}
-			<section className="py-5 bg-light">
-				<Container>
-					<Row className="text-center mb-5">
-						<Col>
-							<h2 className="section-title">Department Contacts</h2>
-							<p className="section-subtitle"></p>
-						</Col>
-					</Row>
-					<Row>
-						{departments.map((dept) => (
-							<Col lg={4} md={6} className="mb-4" key={dept.id}>
-								<Card className="department-card h-100 border-0 shadow-sm">
-									<Card.Body>
-										<h5 className="department-name text-primary">
-											{dept.name}
-										</h5>
-
-										<div className="department-contact-item">
-											<FaPhone className="department-icon" />
-											<span>{dept.phone}</span>
-										</div>
-
-										<div className="department-contact-item">
-											<FaEnvelope className="department-icon" />
-											<span>{dept.email}</span>
-										</div>
-
-										<div className="department-contact-item">
-											<FaClock className="department-icon" />
-											<span>{dept.hours}</span>
-										</div>
-
-										<div className="department-contact-item">
-											<FaMapMarkerAlt className="department-icon" />
-											<span>{dept.location}</span>
-										</div>
-									</Card.Body>
-								</Card>
-							</Col>
-						))}
 					</Row>
 				</Container>
 			</section>
