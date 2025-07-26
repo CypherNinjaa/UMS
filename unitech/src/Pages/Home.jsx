@@ -4,6 +4,7 @@ import EventsCalendar from "../Components/Home/EventsCalendar";
 import NewsHighlights from "../Components/Home/NewsHighlights";
 import WhyChooseUs from "../Components/Home/WhyChooseUs";
 import StudentSuccessStories from "../Components/Home/StudentSuccessStories";
+import Footer from "../Components/Common/Footer";
 
 const Home = () => {
 	return (
@@ -13,6 +14,7 @@ const Home = () => {
 			<NewsHighlights />
 			<StudentSuccessStories />
 			<WhyChooseUs />
+			<Footer />
 		</div>
 	);
 };
