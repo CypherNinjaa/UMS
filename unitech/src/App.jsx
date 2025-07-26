@@ -8,6 +8,7 @@ import Navbar from "./Components/Common/Navbar/Navbar";
 // pages components will imported here-
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
+import Faculty from "./Pages/Faculty";
 function App() {
 	return (
 		<>
@@ -17,7 +18,8 @@ function App() {
 					<main className="main-content">
 						<Routes>
 							<Route path="/" element={<Home />} />
-							<Route path="/Contact" element={<Contact />} />
+							<Route path="/contact" element={<Contact />} />
+							<Route path="/faculty" element={<Faculty />} />
 						</Routes>
 					</main>
 				</div>
