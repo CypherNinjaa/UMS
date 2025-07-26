@@ -33,9 +33,9 @@ const HeroSection = () => {
 						</div>
 						<div className="hero-buttons">
 							<button
-								variant="primary"
+								variant="outline-light"
 								size="lg"
-								className="cta-button me-3"
+								className="btn bg-warning me-3"
 								onClick={() =>
 									document
 										.getElementById("programs")
