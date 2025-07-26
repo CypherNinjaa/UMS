@@ -159,7 +159,7 @@ const EventsCalendar = () => {
 								className="campus-carousel"
 							>
 								{galleryImages.map((image) => (
-									<Carousel.Item key={Image.id}>
+									<Carousel.Item key={image.id}>
 										<div className="carousel-image-container">
 											<img
 												className="carousel-image"
