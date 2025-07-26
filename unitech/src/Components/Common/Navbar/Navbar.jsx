@@ -71,6 +71,14 @@ const NavigationBar = () => {
 						>
 							Contact Us
 						</Nav.Link>
+						<Nav.Link
+							as={Link}
+							to="/Faculty"
+							onClick={handleNavclick}
+							className="nav-item"
+						>
+							Faculty
+						</Nav.Link>
 						{/* Add more nav items here */}
 					</Nav>
 				</Navbar.Collapse>
