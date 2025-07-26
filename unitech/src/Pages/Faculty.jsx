@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
 	Container,
@@ -19,116 +18,83 @@ import {
 	FaAward,
 	FaLinkedin,
 } from "react-icons/fa";
+import "./Pages.css";
 
 const Faculty = () => {
 	// Sample faculty data - in real app, this would come from an API
 	const [faculty] = useState([
-		
-			
+		{
+			id: 1,
+			name: "Dr. Sarah Johnson",
+			title: "Professor of Computer Science",
+			department: "Computer Science",
+			specialization: "Artificial Intelligence, Machine Learning",
+			email: "sarah.johnson@eduverse.edu",
+			phone: "+1-555-0101",
+			image:
+				"https://images.unsplash.com/photo-1494790108755-2616b612b977?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+			featured: true,
+		},
 		{
 			id: 2,
-			name: "Dr. Vikash Yadav",
-			title: "Associate Professor of Multiple Computer Launguages",
-			department: "Computer Launguages",
-			education: "Ph.D. Amity University, Patna ",
-			specialization: "Java, React, Python, C++",
-			experience: "12 years",
-			email: "vikashkelly@gmail.com",
-			phone: "+91-9199697225",
-			office: "Business Building, Room 205",
+			name: "Dr. Michael Chen",
+			title: "Associate Professor of Business",
+			department: "Business Administration",
+			specialization: "Strategic Management, Entrepreneurship",
+			email: "michael.chen@eduverse.edu",
+			phone: "+1-555-0102",
 			image:
 				"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-			bio: "Dr. Yadav is a leading expert in computer languages with over a decade of teaching and research experience. He has published numerous papers on programming languages and software development.",
-			achievements: [
-				"Best Codder Award at Amity University patna in 2025",
-				"All India Hackathon Winner 2025",
-				"codder of the year 2025 at C Das Patna",
-				
-			],
-			courses: [
-				"Advanced Java Programming",
-				"React Development",
-				"Python for Data Science",
-				"C++ Programming Fundamentals",
-				"Web Development with React",
-			],
 			featured: false,
 		},
 		{
 			id: 3,
-			name: "Dr. Kanchana Return",
-			title: "Professor of Data Scructures and Algorithms",
-			department: "C Programming",
-			education: "Ph.D. Computer Science, MIT",
-			specialization: "Data Structures, Algorithms, Machine Learning",
-			experience: "1 years",
-			email: "Kanchanareturn68345@gmail.com",
-			phone: "+91-7050010897",
-			office: "Science Building, Room 415",
+			name: "Dr. Emily Rodriguez",
+			title: "Professor of Biology",
+			department: "Biology",
+			specialization: "Genetics, Biotechnology",
+			email: "emily.rodriguez@eduverse.edu",
+			phone: "+1-555-0103",
 			image:
 				"https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-			bio: "Dr.  Kanchana Return is a passionate educator and researcher in the field of data structures and algorithms. With a strong foundation in computer science, she has contributed to various innovative projects and has a keen interest in machine learning applications.",
-			
-			achievements: [
-				"Data Structures Excellence Award 2023",
-				"Top 10 Algorithms Researcher 2024",
-				"Machine Learning Innovator 2025",
-			],
-			courses: ["Data Structures and Algorithms", "Machine Learning Basics", "Advanced C Programming"],
 			featured: true,
 		},
 		{
 			id: 4,
-			name: "Dr. Hari om",
-			title: "Associate Professor of Robotics and Automation",
+			name: "Dr. James Wilson",
+			title: "Assistant Professor of Engineering",
 			department: "Engineering",
-			education: "Ph.D. Robotics, Stanford University",
 			specialization: "Robotics, Automation",
-			experience: "18 years",
-			email: "hariom.21242@gmail.com",
-			phone: "+91-8294447219",
-			office: "Engineering Building, Room 120",
+			email: "james.wilson@eduverse.edu",
+			phone: "+1-555-0104",
 			image:
-				"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-			bio: "Dr. Hari om is a distinguished researcher in robotics and automation, with extensive experience in developing cutting-edge robotic systems and automation solutions. His work has significantly advanced the field of robotics engineering.",
-			achievements: [
-				"Robotics Innovation Award 2023",
-				"Industry Partnership",
-				"Robotics Excellence Award 2024",
-				"Automation Leader 2025",
-				
-			],
-			courses: ["Robotics Engineering", "Control Systems", "Automation Design"],
+				"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
 			featured: false,
 		},
 		{
 			id: 5,
-			name: "Dr. Pawan Kumar",
+			name: "Dr. Lisa Zhang",
 			title: "Professor of International Relations",
-			department: "OPerating System and Networking",
-			education: "Ph.D. Political Science, Harvard University",
-			specialization: "Linex, Networking, Cybersecurity",
-			experience: "20 years",
-			email: "pawan7457@gmail.com",
-			phone: "+91-9365678475",
-			office: "Liberal Arts Building, Room 308",
+			department: "Political Science",
+			specialization: "International Diplomacy, Global Politics",
+			email: "lisa.zhang@eduverse.edu",
+			phone: "+1-555-0105",
 			image:
-				"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-			bio: "Dr. Pawan Kumar is a renowned scholar in international relations, focusing on the intersection of technology and global politics. With over two decades of experience, he has contributed significantly to the understanding of cybersecurity and its implications for international security.",
-			achievements: ["UN Advisor", 
-				"Fulbright Scholar", 
-				"Diplomatic Medal"
-			],
-			courses: [
-				"International Relations",
-				"Diplomatic Studies",
-				"Global Politics",
-				"Cybersecurity and International Relations",
-				
-			],
+				"https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80",
 			featured: true,
 		},
-		
+		{
+			id: 6,
+			name: "Dr. Robert Taylor",
+			title: "Associate Professor of Mathematics",
+			department: "Mathematics",
+			specialization: "Applied Mathematics, Statistics",
+			email: "robert.taylor@eduverse.edu",
+			phone: "+1-555-0106",
+			image:
+				"https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+			featured: false,
+		},
 	]);
 
 	const [searchTerm, setSearchTerm] = useState("");
@@ -210,102 +176,56 @@ const Faculty = () => {
 				<Container>
 					<Row>
 						{filteredFaculty.map((member) => (
-							<Col lg={3} md={6} className="mb-4" key={member.id}>
-								<Card className="faculty-card h-70">
-									{member.featured && (
-										<div className="featured-badge">
-											<Badge bg="warning" className="featured-text">
-												<FaAward className="me-1" />
-												Distinguished
-											</Badge>
-										</div>
-									)}
-
-									<div className="faculty-image-container">
+							<Col lg={4} md={6} className="mb-4" key={member.id}>
+								<Card className="faculty-card h-100 shadow-sm">
+									<div className="faculty-image-container position-relative">
 										<img
 											src={member.image}
 											alt={member.name}
 											className="faculty-image"
 										/>
+										{member.featured && (
+											<div className="position-absolute top-0 end-0 m-2">
+												<Badge bg="warning" className="featured-text">
+													<FaAward className="me-1" />
+													Distinguished
+												</Badge>
+											</div>
+										)}
 									</div>
 
-									<Card.Body className="d-flex flex-column">
-										<div className="faculty-header mb-3">
-											<h5 className="faculty-name">{member.name}</h5>
-											<p className="faculty-title text-primary mb-1">
-												{member.title}
-											</p>
-											<Badge bg="secondary" className="department-badge">
-												{member.department}
-											</Badge>
-										</div>
+									<Card.Body className="text-center">
+										<h5 className="faculty-name mb-1">{member.name}</h5>
+										<p className="faculty-title text-primary mb-2">
+											{member.title}
+										</p>
+										<Badge bg="secondary" className="mb-3">
+											{member.department}
+										</Badge>
 
-										<div className="faculty-education mb-2">
-											<small className="text-muted">
-												<FaGraduationCap className="me-1" />
-												{member.education}
-											</small>
-										</div>
+										<p className="faculty-specialization text-muted mb-3">
+											{member.specialization}
+										</p>
 
-										<div className="faculty-specialization mb-3">
-											<strong>Specialization:</strong>
-											<p className="text-muted mb-0">{member.specialization}</p>
-										</div>
-
-										<p className="faculty-bio">{member.bio}</p>
-
-										<div className="faculty-achievements mb-3">
-											<h6 className="mb-2">Achievements:</h6>
-											<div className="d-flex flex-wrap gap-1">
-												{member.achievements.map((achievement, index) => (
-													<Badge
-														key={index}
-														bg="success"
-														className="achievement-badge"
-													>
-														{achievement}
-													</Badge>
-												))}
+										<div className="faculty-contact mb-3">
+											<div className="d-flex justify-content-center align-items-center mb-2">
+												<FaEnvelope className="me-2 text-primary" />
+												<small>{member.email}</small>
+											</div>
+											<div className="d-flex justify-content-center align-items-center">
+												<FaPhone className="me-2 text-primary" />
+												<small>{member.phone}</small>
 											</div>
 										</div>
 
-										<div className="faculty-courses mb-3">
-											<h6 className="mb-2">Courses:</h6>
-											<div className="d-flex flex-wrap gap-1">
-												{member.courses.map((course, index) => (
-													<Badge
-														key={index}
-														bg="light"
-														text="dark"
-														className="course-badge"
-													>
-														<FaBook className="me-1" />
-														{course}
-													</Badge>
-												))}
-											</div>
-										</div>
-
-										<div className="mt-auto">
-											<div className="faculty-contact">
-												<div className="contact-item">
-													<FaEnvelope className="contact-icon" />
-													<small>{member.email}</small>
-												</div>
-												<div className="contact-item">
-													<FaPhone className="contact-icon" />
-													<small>{member.phone}</small>
-												</div>
-												<div className="contact-item mb-3">
-													<FaGraduationCap className="contact-icon" />
-													<small>{member.office}</small>
-												</div>
-											</div>
-											<Button variant="outline-primary" className="w-100">
-												<FaLinkedin className="me-2" />
-												View Profile
-											</Button>
-										</div>
+										<Button
+											variant="outline-primary"
+											size="sm"
+											className="w-100"
+										>
+											<FaLinkedin className="me-2" />
+											View Profile
+										</Button>
 									</Card.Body>
 								</Card>
 							</Col>
