@@ -1,0 +1,157 @@
+/* Admin Layout Styles */
+.admin-layout {
+	background-color: #f8f9fa;
+	min-height: 100vh;
+}
+
+.admin-navbar {
+	z-index: 1050;
+	height: 60px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-toggle {
+	border: none !important;
+	background: transparent !important;
+}
+
+.sidebar-toggle:hover {
+	background-color: #f8f9fa !important;
+}
+
+.admin-content-wrapper {
+	display: flex;
+	padding-top: 60px; /* Height of navbar */
+	min-height: calc(100vh - 60px);
+}
+
+/* Sidebar Styles */
+.admin-sidebar {
+	width: 250px;
+	background-color: #2c3e50;
+	color: white;
+	transition: all 0.3s ease;
+	position: fixed;
+	height: calc(100vh - 60px);
+	overflow-y: auto;
+	z-index: 1040;
+}
+
+.admin-sidebar.collapsed {
+	width: 70px;
+}
+
+.sidebar-content {
+	padding: 1rem 0;
+}
+
+.sidebar-item {
+	display: flex;
+	align-items: center;
+	padding: 12px 20px;
+	color: rgba(255, 255, 255, 0.8) !important;
+	text-decoration: none !important;
+	transition: all 0.3s ease;
+	border: none;
+	margin: 0 10px;
+	border-radius: 8px;
+}
+
+.sidebar-item:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: white !important;
+}
+
+.sidebar-item.active {
+	background-color: #3498db;
+	color: white !important;
+}
+
+.sidebar-icon {
+	font-size: 18px;
+	min-width: 20px;
+	margin-right: 12px;
+}
+
+.admin-sidebar.collapsed .sidebar-icon {
+	margin-right: 0;
+}
+
+.sidebar-text {
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.admin-sidebar.collapsed .sidebar-text {
+	display: none;
+}
+
+/* Main Content Styles */
+.admin-main-content {
+	flex: 1;
+	margin-left: 250px;
+	transition: all 0.3s ease;
+	background-color: #f8f9fa;
+	min-height: calc(100vh - 60px);
+}
+
+.admin-main-content.expanded {
+	margin-left: 70px;
+}
+
+/* Notification Badge */
+.admin-navbar .badge {
+	top: -8px;
+	right: -8px;
+	font-size: 0.7rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.admin-sidebar {
+		width: 70px;
+	}
+
+	.admin-main-content {
+		margin-left: 70px;
+	}
+
+	.sidebar-text {
+		display: none;
+	}
+}
+
+@media (max-width: 576px) {
+	.admin-sidebar {
+		width: 0;
+		transform: translateX(-100%);
+	}
+
+	.admin-sidebar.show {
+		width: 250px;
+		transform: translateX(0);
+	}
+
+	.admin-main-content {
+		margin-left: 0;
+	}
+}
+
+/* Custom Scrollbar for Sidebar */
+.admin-sidebar::-webkit-scrollbar {
+	width: 4px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+	background: #34495e;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+	background: #3498db;
+	border-radius: 2px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb:hover {
+	background: #2980b9;
+}
