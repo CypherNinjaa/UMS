@@ -101,9 +101,10 @@ const NavigationBar = () => {
 						<Button
 							variant="outline-light"
 							className="login-btn"
-							onClick={() => alert("Login functionality to be implemented")}
+							as={Link}
+							to="/admin"
 						>
-							Login
+							Admin Login
 						</Button>
 					</Nav>
 				</Navbar.Collapse>
