@@ -48,27 +48,9 @@ const AdminSettings = () => {
 		accreditation: "Accredited by National Education Board",
 	});
 
-	// Notification Settings State
-	const [notificationSettings, setNotificationSettings] = useState({
-		emailNotifications: true,
-		smsNotifications: false,
-		pushNotifications: true,
-		facultyUpdates: true,
-		studentUpdates: true,
-		systemAlerts: true,
-		weeklyReports: true,
-		monthlyReports: false,
-	});
 
-	// Theme Settings State
-	const [themeSettings, setThemeSettings] = useState({
-		primaryColor: "#007bff",
-		secondaryColor: "#6c757d",
-		accentColor: "#28a745",
-		darkMode: false,
-		sidebarCollapsed: false,
-		compactMode: false,
-	});
+
+
 
 	// Security Settings State
 	const [securitySettings, setSecuritySettings] = useState({
@@ -85,18 +67,7 @@ const AdminSettings = () => {
 		setGeneralSettings((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleNotificationChange = (e) => {
-		const { name, checked } = e.target;
-		setNotificationSettings((prev) => ({ ...prev, [name]: checked }));
-	};
 
-	const handleThemeChange = (e) => {
-		const { name, value, type, checked } = e.target;
-		setThemeSettings((prev) => ({
-			...prev,
-			[name]: type === "checkbox" ? checked : value,
-		}));
-	};
 
 	const handleSecurityChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -300,207 +271,9 @@ const AdminSettings = () => {
 								</Form>
 							</Tab>
 
-							{/* Notification Settings Tab */}
-							<Tab
-								eventKey="notifications"
-								title={
-									<>
-										<FaBell className="me-2" />
-										Notifications
-									</>
-								}
-							>
-								<Row>
-									<Col md={6}>
-										<h5 className="mb-3">Communication Preferences</h5>
-										<Form.Check
-											type="switch"
-											id="emailNotifications"
-											name="emailNotifications"
-											label="Email Notifications"
-											checked={notificationSettings.emailNotifications}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="smsNotifications"
-											name="smsNotifications"
-											label="SMS Notifications"
-											checked={notificationSettings.smsNotifications}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="pushNotifications"
-											name="pushNotifications"
-											label="Push Notifications"
-											checked={notificationSettings.pushNotifications}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-									</Col>
-									<Col md={6}>
-										<h5 className="mb-3">Update Notifications</h5>
-										<Form.Check
-											type="switch"
-											id="facultyUpdates"
-											name="facultyUpdates"
-											label="Faculty Updates"
-											checked={notificationSettings.facultyUpdates}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="studentUpdates"
-											name="studentUpdates"
-											label="Student Updates"
-											checked={notificationSettings.studentUpdates}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="systemAlerts"
-											name="systemAlerts"
-											label="System Alerts"
-											checked={notificationSettings.systemAlerts}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-									</Col>
-								</Row>
 
-								<hr className="my-4" />
 
-								<Row>
-									<Col md={6}>
-										<h5 className="mb-3">Report Frequency</h5>
-										<Form.Check
-											type="switch"
-											id="weeklyReports"
-											name="weeklyReports"
-											label="Weekly Reports"
-											checked={notificationSettings.weeklyReports}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="monthlyReports"
-											name="monthlyReports"
-											label="Monthly Reports"
-											checked={notificationSettings.monthlyReports}
-											onChange={handleNotificationChange}
-											className="mb-2"
-										/>
-									</Col>
-								</Row>
-
-								<Button
-									variant="primary"
-									onClick={() => handleSave("Notification")}
-									className="mt-3"
-								>
-									<FaSave className="me-2" />
-									Save Notification Settings
-								</Button>
-							</Tab>
-
-							{/* Theme Settings Tab */}
-							<Tab
-								eventKey="theme"
-								title={
-									<>
-										<FaPalette className="me-2" />
-										Theme
-									</>
-								}
-							>
-								<Row>
-									<Col md={6}>
-										<h5 className="mb-3">Color Scheme</h5>
-										<Form.Group className="mb-3">
-											<Form.Label>Primary Color</Form.Label>
-											<InputGroup>
-												<Form.Control
-													type="color"
-													name="primaryColor"
-													value={themeSettings.primaryColor}
-													onChange={handleThemeChange}
-													style={{ width: "60px" }}
-												/>
-												<Form.Control
-													type="text"
-													value={themeSettings.primaryColor}
-													onChange={handleThemeChange}
-													name="primaryColor"
-												/>
-											</InputGroup>
-										</Form.Group>
-										<Form.Group className="mb-3">
-											<Form.Label>Secondary Color</Form.Label>
-											<InputGroup>
-												<Form.Control
-													type="color"
-													name="secondaryColor"
-													value={themeSettings.secondaryColor}
-													onChange={handleThemeChange}
-													style={{ width: "60px" }}
-												/>
-												<Form.Control
-													type="text"
-													value={themeSettings.secondaryColor}
-													onChange={handleThemeChange}
-													name="secondaryColor"
-												/>
-											</InputGroup>
-										</Form.Group>
-									</Col>
-									<Col md={6}>
-										<h5 className="mb-3">Layout Preferences</h5>
-										<Form.Check
-											type="switch"
-											id="darkMode"
-											name="darkMode"
-											label="Dark Mode"
-											checked={themeSettings.darkMode}
-											onChange={handleThemeChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="sidebarCollapsed"
-											name="sidebarCollapsed"
-											label="Collapsed Sidebar by Default"
-											checked={themeSettings.sidebarCollapsed}
-											onChange={handleThemeChange}
-											className="mb-2"
-										/>
-										<Form.Check
-											type="switch"
-											id="compactMode"
-											name="compactMode"
-											label="Compact Mode"
-											checked={themeSettings.compactMode}
-											onChange={handleThemeChange}
-											className="mb-2"
-										/>
-									</Col>
-								</Row>
-
-								<Button
-									variant="primary"
-									onClick={() => handleSave("Theme")}
-									className="mt-3"
-								>
-									<FaSave className="me-2" />
-									Save Theme Settings
-								</Button>
-							</Tab>
-
+							
 							{/* Security Settings Tab */}
 							<Tab
 								eventKey="security"
