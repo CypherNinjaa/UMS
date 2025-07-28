@@ -8,7 +8,7 @@ const Users = require("./models/Users");
 const UserRoutes = require("./routes/UserRoutes");
 
 app.get("/", (req, res) => {
-	res.send("Hello vikash");
+	res.send("Hello Unitech!");
 });
 
 app.use(cors());
