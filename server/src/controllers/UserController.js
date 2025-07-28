@@ -3,14 +3,15 @@ const Users = require("../models/Users");
 const UserController = {
 	CreateUser: async (req, res) => {
 		try {
-			const { name, email, password,role} = req.body;
-			console.log(name, email, password,role);
+			const { name, email, password, role, mobile_no } = req.body;
+			console.log(name, email, password, role, mobile_no);
 
 			const NewUser = await Users.create({
 				name,
 				email,
 				password,
-				role
+				role,
+				mobile_no,
 			});
 			res.status(201).json(NewUser);
 		} catch (error) {
@@ -76,6 +77,33 @@ const UserController = {
 		} catch (error) {
 			console.log(error);
 			res.json({ message: "delete Failed" });
+		}
+	},
+	login: async (req, res) => {
+		try {
+			const { email, password } = req.body;
+
+			// Find user by email
+			const user = await Users.findOne({ where: { email } });
+			if (!user) {
+				return res.status(401).json({ message: "Invalid credentials" });
+			}
+
+			// In a real application, you should hash passwords and compare hashes
+			// For now, we'll do a simple string comparison (NOT recommended for production)
+			if (user.password !== password) {
+				return res.status(401).json({ message: "Invalid credentials" });
+			}
+
+			// Return user data without password
+			const { password: _, ...userWithoutPassword } = user.toJSON();
+			res.status(200).json({
+				message: "Login successful",
+				user: userWithoutPassword,
+			});
+		} catch (error) {
+			console.log("Login error:", error);
+			res.status(500).json({ message: "Login failed. Please try again." });
 		}
 	},
 };
