@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Container,
 	Row,
@@ -16,6 +17,7 @@ import {
 	FaUniversity,
 } from "react-icons/fa";
 import "./Login.css";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
 	const [formData, setFormData] = useState({
@@ -25,6 +27,28 @@ const Login = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
+
+	const { login, isAuthenticated, user } = useAuth();
+	const navigate = useNavigate();
+
+	// Redirect if already authenticated
+	useEffect(() => {
+		if (isAuthenticated && user) {
+			switch (user.role?.toLowerCase()) {
+				case "admin":
+					navigate("/admin", { replace: true });
+					break;
+				case "faculty":
+					navigate("/facultydashboard", { replace: true });
+					break;
+				case "student":
+					navigate("/student", { replace: true });
+					break;
+				default:
+					navigate("/", { replace: true });
+			}
+		}
+	}, [isAuthenticated, user, navigate]);
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -72,12 +96,28 @@ const Login = () => {
 		setIsLoading(true);
 
 		try {
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			const result = await login(formData.email, formData.password);
 
-			console.log("Login data:", formData);
-			// Handle successful login here
-			alert("Login successful!");
+			if (result.success) {
+				// Role-based redirection
+				const { role } = result.user;
+				switch (role.toLowerCase()) {
+					case "admin":
+						navigate("/admin");
+						break;
+					case "faculty":
+						navigate("/facultydashboard");
+						break;
+					case "student":
+						navigate("/student");
+						break;
+					default:
+						// If role is not recognized, redirect to home
+						navigate("/");
+				}
+			} else {
+				setErrors({ submit: result.error });
+			}
 		} catch (error) {
 			console.error("Login error:", error);
 			setErrors({ submit: "Login failed. Please try again." });
