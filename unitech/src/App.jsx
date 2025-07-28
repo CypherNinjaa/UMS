@@ -7,6 +7,7 @@ import Navbar from "./Components/Common/Navbar/Navbar";
 import AuthProvider from "./contexts/AuthContext";
 import ProtectedRoute from "./Components/Common/ProtectedRoute";
 
+
 // pages components will imported here-
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
