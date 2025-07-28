@@ -15,7 +15,7 @@
 
 .custom-navbar .navbar-brand:hover {
 	transform: scale(1.05);
-	color: #f8f9fa ;
+	color: #f8f9fa;
 }
 
 /* Navigation components styling */
@@ -52,10 +52,11 @@
 
 .login-btn:hover {
 	background-color: #ffffff;
-	color: #3498db !important;
+	color: #1ddc0c !important;
 	transform: translateY(-2px);
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 15px rgba(6, 133, 225, 0.2);
 }
+
 
 /* Mobile responsiveness */
 @media (max-width: 991px) {
@@ -70,6 +71,8 @@
 
 	.login-btn {
 		margin-top: 1rem;
+		padding: 0.7rem 2.5rem;
+		font-size: 1rem;
 		width: 100%;
 	}
 }
