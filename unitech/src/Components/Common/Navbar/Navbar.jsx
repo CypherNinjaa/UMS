@@ -100,11 +100,11 @@ const NavigationBar = () => {
 					<Nav className="ms-auto">
 						<Button
 							variant="outline-light"
-							className="login-btn"
+							className="btn text-light login-btn"
 							as={Link}
-							to="/admin"
+							to="/login"
 						>
-							Admin Login
+							Login
 						</Button>
 					</Nav>
 				</Navbar.Collapse>

@@ -11,6 +11,7 @@ import Contact from "./Pages/Contact";
 import Faculty from "./Pages/Faculty";
 import Programs from "./Pages/Programs";
 import About from "./Pages/About";
+import Login from "./Pages/Login";
 import Footer from "../src/Components/Common/Footer";
 
 // Admin pages
@@ -89,6 +90,9 @@ function App() {
 								</>
 							}
 						/>
+
+						{/* Auth Routes */}
+						<Route path="/login" element={<Login />} />
 
 						{/* Admin Routes */}
 						<Route path="/admin" element={<AdminDashboard />} />
