@@ -1,19 +1,34 @@
 body {
 	background-color: #f8f9fa;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
 }
 
 .faculty-layout {
 	min-height: 100vh;
+	width: 100vw;
+	overflow-x: hidden;
 }
 
 .faculty-content {
 	min-height: calc(100vh - 56px); /* Subtract navbar height */
+	width: 100%;
+	display: flex;
 }
 
 .faculty-main-content {
 	flex: 1;
 	background-color: #f8f9fa;
 	overflow-y: auto;
+	width: calc(100% - 250px); /* Subtract sidebar width */
+	max-width: none;
+	margin: 0;
+	padding: 1.5rem;
+}
+
+.faculty-sidebar {
+	flex-shrink: 0;
 }
 
 .nav-link:hover {

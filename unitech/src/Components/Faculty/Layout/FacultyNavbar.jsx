@@ -14,11 +14,11 @@ function FacultyNavbar() {
 			<Navbar.Brand href="/faculty-dashboard">Faculty Portal</Navbar.Brand>
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav className="me-auto">
+				{/* <Nav className="me-auto">
 					<Nav.Link href="/faculty-dashboard">Dashboard</Nav.Link>
 					<Nav.Link href="/faculty/courses">My Courses</Nav.Link>
 					<Nav.Link href="/faculty/students">Students</Nav.Link>
-				</Nav>
+				</Nav> */}
 				<Nav>
 					<Dropdown align="end">
 						<Dropdown.Toggle variant="outline-light" id="dropdown-basic">
