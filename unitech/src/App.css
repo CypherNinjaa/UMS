@@ -5,6 +5,12 @@
 	box-sizing: border-box;
 }
 
+.nav-link:hover {
+  background-color: #495057;
+  border-radius: 5px;
+}
+
+
 html {
 	scroll-behavior: smooth;
 	overflow-x: hidden;
