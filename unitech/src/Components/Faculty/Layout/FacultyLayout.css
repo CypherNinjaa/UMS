@@ -1,7 +1,44 @@
 body {
-  background-color: #f8f9fa;
+	background-color: #f8f9fa;
 }
+
+.faculty-layout {
+	min-height: 100vh;
+}
+
+.faculty-content {
+	min-height: calc(100vh - 56px); /* Subtract navbar height */
+}
+
+.faculty-main-content {
+	flex: 1;
+	background-color: #f8f9fa;
+	overflow-y: auto;
+}
+
 .nav-link:hover {
-  background-color: #495057;
-  border-radius: 5px;
+	background-color: #495057;
+	border-radius: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.faculty-content {
+		flex-direction: column;
+	}
+
+	.faculty-sidebar {
+		width: 100% !important;
+		height: auto !important;
+	}
+}
+
+/* Card hover effects */
+.faculty-layout .card {
+	transition: transform 0.2s ease-in-out;
+}
+
+.faculty-layout .card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
