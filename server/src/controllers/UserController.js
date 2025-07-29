@@ -89,8 +89,7 @@ const UserController = {
 				return res.status(401).json({ message: "Invalid credentials" });
 			}
 
-			// In a real application, you should hash passwords and compare hashes
-			// For now, we'll do a simple string comparison (NOT recommended for production)
+			//comparing password 
 			if (user.password !== password) {
 				return res.status(401).json({ message: "Invalid credentials" });
 			}
