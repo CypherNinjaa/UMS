@@ -5,15 +5,19 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT;
 const Users = require("./models/Users");
+const Faculty = require("./models/Faculty");
 const UserRoutes = require("./routes/UserRoutes");
+const FacultyRoutes = require("./routes/FacultyRoutes");
 
 app.get("/", (req, res) => {
 	res.send("Hello Unitech!");
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use("/api/users", UserRoutes);
+app.use("/api/faculty", FacultyRoutes);
 
 // Start the server first, then try to connect to database
 app.listen(PORT, () => {

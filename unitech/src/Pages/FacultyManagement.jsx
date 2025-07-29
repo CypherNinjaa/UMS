@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Row,
 	Col,
@@ -10,6 +10,9 @@ import {
 	InputGroup,
 	Dropdown,
 	Modal,
+	Spinner,
+	Alert,
+	Pagination,
 } from "react-bootstrap";
 import {
 	FaPlus,
@@ -19,111 +22,82 @@ import {
 	FaEye,
 	FaFilter,
 	FaDownload,
+	FaStar,
+	FaRegStar,
+	FaUsers,
+	FaUserCheck,
+	FaUserClock,
 } from "react-icons/fa";
 import AdminLayout from "../Components/Admin/Layout/AdminLayout";
 import FacultyFormModal from "../Components/Admin/Forms/FacultyFormModal";
+import FacultyViewModal from "../Components/Admin/Forms/FacultyViewModal";
+import { useFaculty } from "../hooks/useFaculty";
 
 const FacultyManagement = () => {
-	// Sample faculty data (expanded from our original data)
-	const [faculty, setFaculty] = useState([
-		{
-			id: 1,
-			name: "Dr. Sarah Johnson",
-			title: "Professor of Computer Science",
-			department: "Computer Science",
-			specialization: "Artificial Intelligence, Machine Learning",
-			email: "sarah.johnson@eduverse.edu",
-			phone: "+1-555-0101",
-			status: "Active",
-			joinDate: "2019-08-15",
-			featured: true,
-		},
-		{
-			id: 2,
-			name: "Dr. Michael Chen",
-			title: "Associate Professor of Business",
-			department: "Business Administration",
-			specialization: "Strategic Management, Entrepreneurship",
-			email: "michael.chen@eduverse.edu",
-			phone: "+1-555-0102",
-			status: "Active",
-			joinDate: "2020-01-10",
-			featured: false,
-		},
-		{
-			id: 3,
-			name: "Dr. Emily Rodriguez",
-			title: "Professor of Biology",
-			department: "Biology",
-			specialization: "Genetics, Biotechnology",
-			email: "emily.rodriguez@eduverse.edu",
-			phone: "+1-555-0103",
-			status: "Active",
-			joinDate: "2018-03-22",
-			featured: true,
-		},
-		{
-			id: 4,
-			name: "Dr. James Wilson",
-			title: "Assistant Professor of Engineering",
-			department: "Engineering",
-			specialization: "Robotics, Automation",
-			email: "james.wilson@eduverse.edu",
-			phone: "+1-555-0104",
-			status: "Active",
-			joinDate: "2021-09-01",
-			featured: false,
-		},
-		{
-			id: 5,
-			name: "Dr. Lisa Zhang",
-			title: "Professor of International Relations",
-			department: "Political Science",
-			specialization: "International Diplomacy, Global Politics",
-			email: "lisa.zhang@eduverse.edu",
-			phone: "+1-555-0105",
-			status: "Active",
-			joinDate: "2017-02-14",
-			featured: true,
-		},
-		{
-			id: 6,
-			name: "Dr. Robert Taylor",
-			title: "Associate Professor of Mathematics",
-			department: "Mathematics",
-			specialization: "Applied Mathematics, Statistics",
-			email: "robert.taylor@eduverse.edu",
-			phone: "+1-555-0106",
-			status: "Active",
-			joinDate: "2020-11-30",
-			featured: false,
-		},
-	]);
+	// Use Faculty Context for dynamic data
+	const {
+		faculty,
+		statistics,
+		departments,
+		loading,
+		error,
+		// pagination, // TODO: Add pagination controls
+		filters,
+		actions,
+	} = useFaculty();
 
-	const [searchTerm, setSearchTerm] = useState("");
-	const [selectedDepartment, setSelectedDepartment] = useState("All");
+	// Extract pagination and action functions
+	// const { currentPage, totalPages, totalItems, itemsPerPage } = pagination; // TODO: Add pagination controls
+	const {
+		createFaculty,
+		updateFaculty,
+		deleteFaculty,
+		bulkDeleteFaculty,
+		toggleFeatured,
+		fetchFaculty,
+		fetchStatistics,
+		fetchDepartments,
+		clearError,
+	} = actions;
+
+	// Local state for UI interactions
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showFormModal, setShowFormModal] = useState(false);
+	const [showViewModal, setShowViewModal] = useState(false);
 	const [selectedFaculty, setSelectedFaculty] = useState(null);
 	const [editingFaculty, setEditingFaculty] = useState(null);
+	const [viewingFaculty, setViewingFaculty] = useState(null);
+	const [selectedForBulkDelete, setSelectedForBulkDelete] = useState([]);
+	const [localSearchTerm, setLocalSearchTerm] = useState(filters.search);
+	const [localDepartment, setLocalDepartment] = useState(filters.department);
 
-	// Get unique departments
-	const departments = [
-		"All",
-		...new Set(faculty.map((member) => member.department)),
-	];
-
-	// Filter faculty
+	// Filtered faculty based on current filters
 	const filteredFaculty = faculty.filter((member) => {
 		const matchesSearch =
-			member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			member.department.toLowerCase().includes(searchTerm.toLowerCase());
+			localSearchTerm === "" ||
+			member.name.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			member.email.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			member.department.toLowerCase().includes(localSearchTerm.toLowerCase());
 		const matchesDepartment =
-			selectedDepartment === "All" || member.department === selectedDepartment;
+			localDepartment === "All" || member.department === localDepartment;
 
 		return matchesSearch && matchesDepartment;
 	});
+
+	// Load data on component mount
+	useEffect(() => {
+		fetchFaculty({
+			search: "",
+			department: "All",
+			page: 1,
+			limit: 100, // Fetch more data at once to reduce API calls
+		});
+		fetchStatistics();
+		fetchDepartments();
+	}, [fetchFaculty, fetchStatistics, fetchDepartments]); // Include dependencies
+
+	// Use client-side filtering for better performance
+	// Only make API calls for complex searches or when needed
 
 	const handleDelete = (facultyMember) => {
 		setSelectedFaculty(facultyMember);
@@ -135,31 +109,82 @@ const FacultyManagement = () => {
 		setShowFormModal(true);
 	};
 
+	const handleView = (facultyMember) => {
+		setViewingFaculty(facultyMember);
+		setShowViewModal(true);
+	};
+
+	const handleEditFromView = (facultyMember) => {
+		setShowViewModal(false);
+		setEditingFaculty(facultyMember);
+		setShowFormModal(true);
+	};
+
 	const handleAddNew = () => {
 		setEditingFaculty(null);
 		setShowFormModal(true);
 	};
 
-	const handleSaveFaculty = (facultyData) => {
-		if (editingFaculty) {
-			// Update existing faculty
-			setFaculty(
-				faculty.map((member) =>
-					member.id === editingFaculty.id
-						? { ...facultyData, id: editingFaculty.id }
-						: member
-				)
-			);
-		} else {
-			// Add new faculty
-			setFaculty([...faculty, { ...facultyData, id: Date.now() }]);
+	const handleSaveFaculty = async (facultyData) => {
+		try {
+			if (editingFaculty) {
+				// Update existing faculty
+				await updateFaculty(editingFaculty.id, facultyData);
+			} else {
+				// Add new faculty
+				await createFaculty(facultyData);
+			}
+			setShowFormModal(false);
+			setEditingFaculty(null);
+		} catch (error) {
+			console.error("Error saving faculty:", error);
+			// Error will be handled by the context
 		}
 	};
 
-	const confirmDelete = () => {
-		setFaculty(faculty.filter((member) => member.id !== selectedFaculty.id));
-		setShowDeleteModal(false);
-		setSelectedFaculty(null);
+	const confirmDelete = async () => {
+		try {
+			if (selectedForBulkDelete.length > 0) {
+				await bulkDeleteFaculty(selectedForBulkDelete);
+				setSelectedForBulkDelete([]);
+			} else if (selectedFaculty) {
+				await deleteFaculty(selectedFaculty.id);
+			}
+			setShowDeleteModal(false);
+			setSelectedFaculty(null);
+		} catch (error) {
+			console.error("Error deleting faculty:", error);
+		}
+	};
+
+	const handleToggleFeatured = async (facultyMember) => {
+		try {
+			await toggleFeatured(facultyMember.id);
+		} catch (error) {
+			console.error("Error toggling featured status:", error);
+		}
+	};
+
+	const handleBulkDelete = () => {
+		if (selectedForBulkDelete.length > 0) {
+			setShowDeleteModal(true);
+		}
+	};
+
+	const handleSelectForBulkDelete = (facultyId) => {
+		setSelectedForBulkDelete((prev) =>
+			prev.includes(facultyId)
+				? prev.filter((id) => id !== facultyId)
+				: [...prev, facultyId]
+		);
+	};
+
+	const handleSelectAllForBulkDelete = () => {
+		if (selectedForBulkDelete.length === filteredFaculty.length) {
+			setSelectedForBulkDelete([]);
+		} else {
+			setSelectedForBulkDelete(filteredFaculty.map((f) => f.id));
+		}
 	};
 
 	const getStatusBadge = (status) => {
@@ -184,6 +209,16 @@ const FacultyManagement = () => {
 							</p>
 						</Col>
 						<Col xs="auto">
+							{selectedForBulkDelete.length > 0 && (
+								<Button
+									variant="danger"
+									className="me-2"
+									onClick={handleBulkDelete}
+								>
+									<FaTrash className="me-2" />
+									Delete Selected ({selectedForBulkDelete.length})
+								</Button>
+							)}
 							<Button variant="primary" className="me-2" onClick={handleAddNew}>
 								<FaPlus className="me-2" />
 								Add Faculty
@@ -195,6 +230,61 @@ const FacultyManagement = () => {
 						</Col>
 					</Row>
 				</div>
+
+				{/* Statistics Cards */}
+				<Row className="mb-4">
+					<Col md={3}>
+						<Card className="stats-card">
+							<Card.Body className="text-center">
+								<FaUsers className="stats-icon text-primary mb-2" size={24} />
+								<h3 className="mb-0">{statistics.totalFaculty || 0}</h3>
+								<p className="text-muted mb-0">Total Faculty</p>
+							</Card.Body>
+						</Card>
+					</Col>
+					<Col md={3}>
+						<Card className="stats-card">
+							<Card.Body className="text-center">
+								<FaUserCheck
+									className="stats-icon text-success mb-2"
+									size={24}
+								/>
+								<h3 className="mb-0">{statistics.activeFaculty || 0}</h3>
+								<p className="text-muted mb-0">Active Faculty</p>
+							</Card.Body>
+						</Card>
+					</Col>
+					<Col md={3}>
+						<Card className="stats-card">
+							<Card.Body className="text-center">
+								<FaStar className="stats-icon text-warning mb-2" size={24} />
+								<h3 className="mb-0">{statistics.featuredFaculty || 0}</h3>
+								<p className="text-muted mb-0">Distinguished</p>
+							</Card.Body>
+						</Card>
+					</Col>
+					<Col md={3}>
+						<Card className="stats-card">
+							<Card.Body className="text-center">
+								<FaUserClock className="stats-icon text-info mb-2" size={24} />
+								<h3 className="mb-0">{statistics.pendingFaculty || 0}</h3>
+								<p className="text-muted mb-0">Pending</p>
+							</Card.Body>
+						</Card>
+					</Col>
+				</Row>
+
+				{/* Error Alert */}
+				{error && (
+					<Alert
+						variant="danger"
+						className="mb-4"
+						dismissible
+						onClose={clearError}
+					>
+						<strong>Error:</strong> {error}
+					</Alert>
+				)}
 
 				{/* Filters and Search */}
 				<Card className="mb-4">
@@ -208,15 +298,15 @@ const FacultyManagement = () => {
 									<Form.Control
 										type="text"
 										placeholder="Search faculty by name, email, or department..."
-										value={searchTerm}
-										onChange={(e) => setSearchTerm(e.target.value)}
+										value={localSearchTerm}
+										onChange={(e) => setLocalSearchTerm(e.target.value)}
 									/>
 								</InputGroup>
 							</Col>
 							<Col md={3}>
 								<Form.Select
-									value={selectedDepartment}
-									onChange={(e) => setSelectedDepartment(e.target.value)}
+									value={localDepartment}
+									onChange={(e) => setLocalDepartment(e.target.value)}
 								>
 									{departments.map((department) => (
 										<option key={department} value={department}>
@@ -241,86 +331,140 @@ const FacultyManagement = () => {
 				{/* Faculty Table */}
 				<Card>
 					<Card.Body className="p-0">
-						<Table responsive hover className="mb-0">
-							<thead className="bg-light">
-								<tr>
-									<th>Faculty Member</th>
-									<th>Department</th>
-									<th>Specialization</th>
-									<th>Contact</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{filteredFaculty.map((member) => (
-									<tr key={member.id}>
-										<td>
-											<div>
-												<div className="fw-semibold">{member.name}</div>
-												<div className="text-muted small">{member.title}</div>
-												{member.featured && (
-													<Badge bg="warning" size="sm" className="mt-1">
-														Distinguished
-													</Badge>
-												)}
-											</div>
-										</td>
-										<td>
-											<Badge bg="secondary">{member.department}</Badge>
-										</td>
-										<td>
-											<span className="text-muted small">
-												{member.specialization}
-											</span>
-										</td>
-										<td>
-											<div>
-												<div className="small">{member.email}</div>
-												<div className="small text-muted">{member.phone}</div>
-											</div>
-										</td>
-										<td>{getStatusBadge(member.status)}</td>
-										<td>
-											<Dropdown>
-												<Dropdown.Toggle
-													variant="outline-secondary"
-													size="sm"
-													id={`dropdown-${member.id}`}
-												>
-													Actions
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item>
-														<FaEye className="me-2" />
-														View Details
-													</Dropdown.Item>
-													<Dropdown.Item onClick={() => handleEdit(member)}>
-														<FaEdit className="me-2" />
-														Edit Profile
-													</Dropdown.Item>
-													<Dropdown.Divider />
-													<Dropdown.Item
-														className="text-danger"
-														onClick={() => handleDelete(member)}
-													>
-														<FaTrash className="me-2" />
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</td>
+						{loading ? (
+							<div className="text-center py-5">
+								<Spinner animation="border" role="status">
+									<span className="visually-hidden">Loading...</span>
+								</Spinner>
+								<p className="mt-2 text-muted">Loading faculty data...</p>
+							</div>
+						) : (
+							<Table responsive hover className="mb-0">
+								<thead className="bg-light">
+									<tr>
+										<th style={{ width: "50px" }}>
+											<Form.Check
+												type="checkbox"
+												checked={
+													selectedForBulkDelete.length ===
+														filteredFaculty.length && filteredFaculty.length > 0
+												}
+												onChange={handleSelectAllForBulkDelete}
+											/>
+										</th>
+										<th>Faculty Member</th>
+										<th>Department</th>
+										<th>Specialization</th>
+										<th>Contact</th>
+										<th>Status</th>
+										<th>Featured</th>
+										<th>Actions</th>
 									</tr>
-								))}
-							</tbody>
-						</Table>
+								</thead>
+								<tbody>
+									{filteredFaculty.map((member) => (
+										<tr key={member.id}>
+											<td>
+												<Form.Check
+													type="checkbox"
+													checked={selectedForBulkDelete.includes(member.id)}
+													onChange={() => handleSelectForBulkDelete(member.id)}
+												/>
+											</td>
+											<td>
+												<div>
+													<div className="fw-semibold">{member.name}</div>
+													<div className="text-muted small">{member.title}</div>
+													{member.featured && (
+														<Badge bg="warning" size="sm" className="mt-1">
+															Distinguished
+														</Badge>
+													)}
+												</div>
+											</td>
+											<td>
+												<Badge bg="secondary">{member.department}</Badge>
+											</td>
+											<td>
+												<span className="text-muted small">
+													{member.specialization}
+												</span>
+											</td>
+											<td>
+												<div>
+													<div className="small">{member.email}</div>
+													<div className="small text-muted">{member.phone}</div>
+												</div>
+											</td>
+											<td>{getStatusBadge(member.status)}</td>
+											<td>
+												<Button
+													variant="link"
+													size="sm"
+													className="p-0"
+													onClick={() => handleToggleFeatured(member)}
+												>
+													{member.featured ? (
+														<FaStar className="text-warning" />
+													) : (
+														<FaRegStar className="text-muted" />
+													)}
+												</Button>
+											</td>
+											<td>
+												<Dropdown>
+													<Dropdown.Toggle
+														variant="outline-secondary"
+														size="sm"
+														id={`dropdown-${member.id}`}
+													>
+														Actions
+													</Dropdown.Toggle>
+													<Dropdown.Menu>
+														<Dropdown.Item onClick={() => handleView(member)}>
+															<FaEye className="me-2" />
+															View Details
+														</Dropdown.Item>
+														<Dropdown.Item onClick={() => handleEdit(member)}>
+															<FaEdit className="me-2" />
+															Edit Profile
+														</Dropdown.Item>
+														<Dropdown.Item
+															onClick={() => handleToggleFeatured(member)}
+														>
+															{member.featured ? (
+																<FaRegStar className="me-2" />
+															) : (
+																<FaStar className="me-2" />
+															)}
+															{member.featured
+																? "Remove Featured"
+																: "Make Featured"}
+														</Dropdown.Item>
+														<Dropdown.Divider />
+														<Dropdown.Item
+															className="text-danger"
+															onClick={() => handleDelete(member)}
+														>
+															<FaTrash className="me-2" />
+															Delete
+														</Dropdown.Item>
+													</Dropdown.Menu>
+												</Dropdown>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</Table>
+						)}
 
-						{filteredFaculty.length === 0 && (
+						{!loading && filteredFaculty.length === 0 && (
 							<div className="text-center py-5">
 								<h5>No faculty members found</h5>
 								<p className="text-muted">
-									Try adjusting your search criteria or add a new faculty
-									member.
+									{localSearchTerm || localDepartment !== "All"
+										? "Try adjusting your search criteria or filters."
+										: "Add your first faculty member to get started."}
 								</p>
 								<Button variant="primary" onClick={handleAddNew}>
 									<FaPlus className="me-2" />
@@ -369,6 +513,14 @@ const FacultyManagement = () => {
 					onHide={() => setShowFormModal(false)}
 					faculty={editingFaculty}
 					onSave={handleSaveFaculty}
+				/>
+
+				{/* Faculty View Modal */}
+				<FacultyViewModal
+					show={showViewModal}
+					onHide={() => setShowViewModal(false)}
+					faculty={viewingFaculty}
+					onEdit={handleEditFromView}
 				/>
 			</div>
 		</AdminLayout>

@@ -44,11 +44,6 @@ const AdminSidebar = ({ collapsed }) => {
 			icon: FaNewspaper,
 		},
 		{
-			title: "Gallery",
-			path: "/admin/gallery",
-			icon: FaImages,
-		},
-		{
 			title: "Settings",
 			path: "/admin/settings",
 			icon: FaCog,
