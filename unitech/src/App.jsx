@@ -5,8 +5,8 @@ import "./App.css";
 // importing our custom componnets
 import Navbar from "./Components/Common/Navbar/Navbar";
 import AuthProvider from "./contexts/AuthContext";
+import { FacultyProvider } from "./contexts/FacultyContext";
 import ProtectedRoute from "./Components/Common/ProtectedRoute";
-
 
 // pages components will imported here-
 import Home from "./Pages/Home";
@@ -24,7 +24,6 @@ import ProgramManagement from "./Pages/ProgramManagement";
 import StudentManagement from "./Pages/StudentManagement";
 import AdminSettings from "./Pages/AdminSettings";
 import NewsEventsManagement from "./Pages/NewsEventsManagement";
-import GalleryManagement from "./Pages/GalleryManagement";
 
 // Faculty and Student dashboards
 import FacultyDashboard from "./Pages/FacultyDashboard";
@@ -114,7 +113,9 @@ function App() {
 							path="/admin/faculty"
 							element={
 								<ProtectedRoute allowedRoles={["admin"]}>
-									<FacultyManagement />
+									<FacultyProvider>
+										<FacultyManagement />
+									</FacultyProvider>
 								</ProtectedRoute>
 							}
 						/>
@@ -147,14 +148,6 @@ function App() {
 							element={
 								<ProtectedRoute allowedRoles={["admin"]}>
 									<NewsEventsManagement />
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="/admin/gallery"
-							element={
-								<ProtectedRoute allowedRoles={["admin"]}>
-									<GalleryManagement />
 								</ProtectedRoute>
 							}
 						/>
