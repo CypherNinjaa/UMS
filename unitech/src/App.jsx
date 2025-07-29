@@ -63,13 +63,13 @@ function App() {
 						<Route
 							path="/faculty"
 							element={
-								<>
+								<FacultyProvider>
 									<Navbar />
 									<main className="main-content">
 										<Faculty />
 									</main>
 									<Footer />
-								</>
+								</FacultyProvider>
 							}
 						/>
 						<Route
