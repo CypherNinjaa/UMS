@@ -1,11 +1,18 @@
 import React from "react";
 import { Navbar, Nav, Dropdown, Button } from "react-bootstrap";
 import { FaBars, FaBell, FaUser, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const AdminNavbar = ({ toggleSidebar }) => {
+	const navigate = useNavigate();
+
 	const handleLogout = () => {
-		// Logout functionality to be implemented
-		alert("Logout functionality to be implemented");
+		// Clear any stored authentication data
+		localStorage.removeItem("authToken");
+		localStorage.removeItem("adminUser");
+
+		// Navigate to home page
+		navigate("/");
 	};
 
 	return (

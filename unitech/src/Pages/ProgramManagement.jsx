@@ -99,14 +99,18 @@ const ProgramManagement = () => {
 
 	// Filter programs based on local filters (client-side filtering for better performance)
 	const filteredPrograms = programs.filter((program) => {
+		const programName =
+			program.program_name || program.name || program.title || "";
+		const programCode = program.program_code || program.code || "";
+		const programDepartment = program.department || "";
+		const programDescription = program.description || "";
+
 		const matchesSearch =
 			localSearchTerm === "" ||
-			program.name.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
-			program.code.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
-			program.department
-				.toLowerCase()
-				.includes(localSearchTerm.toLowerCase()) ||
-			program.description.toLowerCase().includes(localSearchTerm.toLowerCase());
+			programName.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			programCode.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			programDepartment.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			programDescription.toLowerCase().includes(localSearchTerm.toLowerCase());
 		const matchesType = localType === "All" || program.type === localType;
 		const matchesDepartment =
 			localDepartment === "All" || program.department === localDepartment;
@@ -140,7 +144,12 @@ const ProgramManagement = () => {
 		});
 		fetchDepartments();
 		fetchStatistics();
-	}, [fetchPrograms, fetchDepartments, fetchStatistics]);
+
+		// Debug: Log programs data structure
+		if (programs.length > 0) {
+			console.log("Programs data structure:", programs[0]);
+		}
+	}, [fetchPrograms, fetchDepartments, fetchStatistics, programs]);
 
 	// Unused legacy handlers - kept for compatibility
 	// const handleDelete = (program) => {
@@ -574,7 +583,10 @@ const ProgramManagement = () => {
 												<td>
 													<div>
 														<div className="fw-semibold d-flex align-items-center">
-															{program.program_name}
+															{program.program_name ||
+																program.name ||
+																program.title ||
+																"Unnamed Program"}
 															{program.is_featured && (
 																<Badge bg="warning" size="sm" className="ms-2">
 																	Featured
@@ -582,7 +594,10 @@ const ProgramManagement = () => {
 															)}
 														</div>
 														<div className="text-muted small">
-															{program.program_code} • {program.total_credits}{" "}
+															{program.program_code ||
+																program.code ||
+																"No Code"}{" "}
+															• {program.total_credits || program.credits || 0}{" "}
 															Credits
 														</div>
 													</div>
@@ -731,9 +746,15 @@ const ProgramManagement = () => {
 								<Tab eventKey="overview" title="Overview">
 									<Row>
 										<Col md={6}>
-											<h5>{selectedProgram.name}</h5>
+											<h5>
+												{selectedProgram.program_name ||
+													selectedProgram.name ||
+													selectedProgram.title ||
+													"Unnamed Program"}
+											</h5>
 											<p className="text-muted">
-												{selectedProgram.description}
+												{selectedProgram.description ||
+													"No description available"}
 											</p>
 											<hr />
 											<Row>
@@ -852,7 +873,13 @@ const ProgramManagement = () => {
 							<>
 								<p>
 									Are you sure you want to delete the program{" "}
-									<strong>{selectedProgram.name}</strong>?
+									<strong>
+										{selectedProgram.program_name ||
+											selectedProgram.name ||
+											selectedProgram.title ||
+											"Unnamed Program"}
+									</strong>
+									?
 								</p>
 								<div className="alert alert-warning">
 									<strong>Warning:</strong> This will affect{" "}
