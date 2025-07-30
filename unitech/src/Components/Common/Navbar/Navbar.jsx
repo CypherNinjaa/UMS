@@ -85,7 +85,7 @@ const NavigationBar = () => {
 							onClick={handleNavclick}
 							className="nav-item"
 						>
-							About
+							About Us
 						</Nav.Link>
 						<Nav.Link
 							as={Link}
