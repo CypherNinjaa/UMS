@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 // importing our custom componnets
 import Navbar from "./Components/Common/Navbar/Navbar";
+import ScrollToTop from "./Components/Common/ScrollToTop";
 import AuthProvider from "./contexts/AuthContext";
 import { FacultyProvider } from "./contexts/FacultyContext";
 import { ProgramProvider } from "./contexts/ProgramContext.jsx";
@@ -23,7 +24,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import FacultyManagement from "./Pages/FacultyManagement";
 import ProgramManagement from "./Pages/ProgramManagement";
 import StudentManagement from "./Pages/StudentManagement";
-
+import ContactManagementPage from "./Pages/ContactManagementPage";
 import NewsEventsManagement from "./Pages/NewsEventsManagement";
 
 // Faculty and Student dashboards
@@ -34,6 +35,7 @@ function App() {
 	return (
 		<AuthProvider>
 			<Router>
+				<ScrollToTop />
 				<div className="App">
 					<Routes>
 						{/* Public Routes */}
@@ -138,12 +140,21 @@ function App() {
 								</ProtectedRoute>
 							}
 						/>
-						
+
 						<Route
 							path="/admin/news"
 							element={
 								<ProtectedRoute allowedRoles={["admin"]}>
 									<NewsEventsManagement />
+								</ProtectedRoute>
+							}
+						/>
+
+						<Route
+							path="/admin/contacts"
+							element={
+								<ProtectedRoute allowedRoles={["admin"]}>
+									<ContactManagementPage />
 								</ProtectedRoute>
 							}
 						/>

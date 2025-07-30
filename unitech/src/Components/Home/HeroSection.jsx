@@ -1,7 +1,9 @@
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { FaGraduationCap, FaArrowRight, FaPlay } from "react-icons/fa";
 import "./HeroSection.css";
+import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
+	const navigate = useNavigate();
 	return (
 		<section id="home" className="hero-section">
 			<div className="hero-overlay"></div>
@@ -32,30 +34,19 @@ const HeroSection = () => {
 							</div>
 						</div>
 						<div className="hero-buttons">
-							<button
+							<Button
+								onClick={() => {
+									navigate("/Programs");
+								}}
 								variant="outline-light"
 								size="lg"
 								className="btn bg-warning me-3"
-								onClick={() =>
-									document
-										.getElementById("programs")
-										.scrollIntoView({ behavior: "smooth" })
-								}
 							>
 								Explore Programs
 								{/* margin start */}
 								<FaArrowRight className="ms-2" />
-							</button>
-							<Button
-								variant="outline-light"
-								size="lg"
-								className="cta-button-outline"
-								onClick={() => alert("Virtual tour feature coming soon!")}
-							>
-								{/* me=> margin end */}
-								<FaPlay className="me-2" />
-								Virtual Tour
 							</Button>
+						
 						</div>
 					</Col>
 					<Col lg={6} className="hero-image">

@@ -11,6 +11,7 @@ import {
 	FaCog,
 	FaChartBar,
 	FaFileAlt,
+	FaEnvelope
 } from "react-icons/fa";
 
 const AdminSidebar = ({ collapsed }) => {
@@ -43,7 +44,11 @@ const AdminSidebar = ({ collapsed }) => {
 			path: "/admin/news",
 			icon: FaNewspaper,
 		},
-		
+		{
+			title: "Contact Management",
+			path: "/admin/contacts",
+			icon: FaEnvelope,
+		},
 	];
 
 	const isActive = (path, exact = false) => {
