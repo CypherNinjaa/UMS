@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Spinner, Alert } from "react-bootstrap";
 import {
 	FaUsers,
 	FaGraduationCap,
@@ -8,38 +8,72 @@ import {
 	FaArrowUp,
 	FaArrowDown,
 } from "react-icons/fa";
+import useDashboard from "../../../hooks/useDashboard";
 
 const StatsCards = () => {
+	const { statistics, loading, error } = useDashboard();
+
+	if (loading) {
+		return (
+			<Row>
+				{[1, 2, 3, 4].map((index) => (
+					<Col lg={3} md={6} className="mb-4" key={index}>
+						<Card className="stats-card h-100 border-0 shadow-sm">
+							<Card.Body className="text-center">
+								<Spinner animation="border" size="sm" />
+								<p className="mt-2 mb-0">Loading...</p>
+							</Card.Body>
+						</Card>
+					</Col>
+				))}
+			</Row>
+		);
+	}
+
+	if (error) {
+		return (
+			<Alert variant="warning" className="mb-4">
+				<strong>Unable to load statistics:</strong> {error}
+			</Alert>
+		);
+	}
+
 	const stats = [
 		{
 			title: "Total Faculty",
-			value: "156",
-			change: "+12%",
-			changeType: "increase",
+			value: statistics.totalFaculty,
+			change: statistics.facultyChange,
+			changeType: statistics.facultyChange.includes("+")
+				? "increase"
+				: "decrease",
 			icon: FaUsers,
 			color: "primary",
 		},
 		{
 			title: "Academic Programs",
-			value: "24",
-			change: "+3",
-			changeType: "increase",
+			value: statistics.totalPrograms,
+			change: statistics.programsChange,
+			changeType: statistics.programsChange.includes("+")
+				? "increase"
+				: "decrease",
 			icon: FaGraduationCap,
 			color: "success",
 		},
 		{
 			title: "Total Students",
-			value: "3,847",
-			change: "+8.5%",
-			changeType: "increase",
+			value: statistics.totalStudents,
+			change: statistics.studentsChange,
+			changeType: statistics.studentsChange.includes("+")
+				? "increase"
+				: "decrease",
 			icon: FaUserGraduate,
 			color: "info",
 		},
 		{
 			title: "Active News",
-			value: "18",
-			change: "-2",
-			changeType: "decrease",
+			value: statistics.activeNews,
+			change: statistics.newsChange,
+			changeType: statistics.newsChange.includes("+") ? "increase" : "decrease",
 			icon: FaNewspaper,
 			color: "warning",
 		},
