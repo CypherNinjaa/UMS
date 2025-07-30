@@ -66,13 +66,17 @@
 	background: white;
 	padding: 40px 30px;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
+	min-height: 100vh;
+	overflow-y: auto;
 }
 
 .contact-form-container {
 	max-width: 500px;
 	width: 100%;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 /* Tab Navigation */
@@ -191,8 +195,14 @@
 @media (max-width: 991.98px) {
 	.contact-left-section,
 	.contact-right-section {
-		min-height: 100vh;
+		min-height: auto;
 		padding: 40px 30px;
+	}
+
+	.contact-right-section {
+		align-items: flex-start;
+		padding-top: 30px;
+		padding-bottom: 50px;
 	}
 
 	.contact-title {
