@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	Modal,
-	Form,
-	Button,
-	Row,
-	Col,
-	Alert,
-	InputGroup,
-} from "react-bootstrap";
+import { Modal, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import {
 	FaUser,
 	FaEnvelope,
@@ -19,13 +11,16 @@ import {
 	FaImage,
 	FaTimes,
 	FaKey,
-	FaEye,
-	FaEyeSlash,
-	FaRandom,
 	FaUserPlus,
 } from "react-icons/fa";
 
-const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
+const FacultyFormModal = ({
+	show,
+	onHide,
+	faculty = null,
+	onSave,
+	onSuccess,
+}) => {
 	const isEdit = faculty !== null;
 
 	const [formData, setFormData] = useState({
@@ -41,10 +36,8 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 		profileImage: "",
 		// Login credentials
 		createLogin: !isEdit, // Auto-check for new faculty
-		loginEmail: "",
-		password: "",
-		confirmPassword: "",
-		generatePassword: false,
+		password: "faculty123",
+		confirmPassword: "faculty123",
 	});
 
 	const [errors, setErrors] = useState({});
@@ -52,8 +45,7 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 	const [imageLoading, setImageLoading] = useState(false);
 	const [imagePreview, setImagePreview] = useState(null);
 	const [selectedFile, setSelectedFile] = useState(null);
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [saveSuccess, setSaveSuccess] = useState(false);
 
 	// Update form data when faculty prop changes
 	useEffect(() => {
@@ -78,10 +70,8 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 				profileImage: faculty.profileImage || "",
 				// Login credentials - don't populate for existing faculty
 				createLogin: false, // Don't auto-create for existing faculty
-				loginEmail: faculty.email || "", // Pre-fill with faculty email
-				password: "",
-				confirmPassword: "",
-				generatePassword: false,
+				password: "faculty123",
+				confirmPassword: "faculty123",
 			});
 
 			// Set image preview if there's an existing image
@@ -102,17 +92,25 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 				profileImage: "",
 				// Login credentials
 				createLogin: true, // Auto-check for new faculty
-				loginEmail: "",
-				password: "",
-				confirmPassword: "",
-				generatePassword: false,
+				password: "faculty123",
+				confirmPassword: "faculty123",
 			});
 			setImagePreview(null);
 			setSelectedFile(null);
 		}
 		// Clear errors when modal opens/closes or faculty changes
 		setErrors({});
+		setSaveSuccess(false);
 	}, [faculty, show]);
+
+	// Add useEffect to handle successful save
+	useEffect(() => {
+		if (saveSuccess) {
+			console.log("Faculty saved successfully, triggering parent refresh...");
+			// Reset the success flag
+			setSaveSuccess(false);
+		}
+	}, [saveSuccess]);
 
 	const departments = [
 		"Computer Science",
@@ -136,32 +134,10 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 			[name]: type === "checkbox" ? checked : value,
 		}));
 
-		// Auto-sync loginEmail with email if they match
-		if (name === "email" && formData.loginEmail === formData.email) {
-			setFormData((prev) => ({
-				...prev,
-				loginEmail: value,
-			}));
-		}
-
 		// Clear error when user starts typing
 		if (errors[name]) {
 			setErrors((prev) => ({ ...prev, [name]: "" }));
 		}
-	};
-
-	const generateRandomPassword = () => {
-		const chars =
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&";
-		let password = "";
-		for (let i = 0; i < 10; i++) {
-			password += chars.charAt(Math.floor(Math.random() * chars.length));
-		}
-		setFormData((prev) => ({
-			...prev,
-			password: password,
-			confirmPassword: password,
-		}));
 	};
 
 	const handleImageChange = (e) => {
@@ -294,23 +270,8 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 
 		// Login credentials validation
 		if (formData.createLogin) {
-			if (!formData.loginEmail.trim()) {
-				newErrors.loginEmail = "Login email is required";
-			} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginEmail)) {
-				newErrors.loginEmail = "Please enter a valid login email address";
-			}
-
-			if (!formData.password.trim()) {
-				newErrors.password = "Password is required";
-			} else if (formData.password.length < 6) {
-				newErrors.password = "Password must be at least 6 characters long";
-			}
-
-			if (!formData.confirmPassword.trim()) {
-				newErrors.confirmPassword = "Please confirm the password";
-			} else if (formData.password !== formData.confirmPassword) {
-				newErrors.confirmPassword = "Passwords do not match";
-			}
+			// No additional validation needed as we use default password
+			// The main email is already validated above and will be used for login
 		}
 
 		setErrors(newErrors);
@@ -327,18 +288,29 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 		setLoading(true);
 
 		try {
-			// Simulate API call
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
 			const facultyData = {
 				...formData,
 				id: isEdit ? faculty.id : Date.now(),
+				// Use the main email as login email when creating login credentials
+				loginEmail: formData.createLogin ? formData.email : undefined,
 			};
 
-			onSave(facultyData);
+			// Call the onSave function which will handle the actual API call
+			await onSave(facultyData);
+
+			// Mark save as successful
+			setSaveSuccess(true);
+
+			// Call onSuccess callback to trigger refresh in parent component
+			if (onSuccess) {
+				await onSuccess();
+			}
+
 			handleClose();
 		} catch (error) {
 			console.error("Error saving faculty:", error);
+			// Show error to user (you might want to add error state for this)
+			alert("Error saving faculty: " + error.message);
 		} finally {
 			setLoading(false);
 		}
@@ -358,10 +330,8 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 			profileImage: "",
 			// Login credentials
 			createLogin: true,
-			loginEmail: "",
-			password: "",
-			confirmPassword: "",
-			generatePassword: false,
+			password: "faculty123",
+			confirmPassword: "faculty123",
 		});
 		setErrors({});
 		setImagePreview(null);
@@ -684,109 +654,22 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 					{formData.createLogin && (
 						<>
 							<Row>
-								<Col md={6}>
-									<Form.Group className="mb-3">
-										<Form.Label>
-											<FaEnvelope className="me-2" />
-											Login Email *
-										</Form.Label>
-										<Form.Control
-											type="email"
-											name="loginEmail"
-											value={formData.loginEmail}
-											onChange={handleChange}
-											placeholder="Enter login email"
-											isInvalid={!!errors.loginEmail}
-										/>
-										<Form.Control.Feedback type="invalid">
-											{errors.loginEmail}
-										</Form.Control.Feedback>
-										<Form.Text className="text-muted">
-											Faculty will use this email to login
-										</Form.Text>
-									</Form.Group>
-								</Col>
-								<Col md={6}>
-									<Form.Group className="mb-3">
-										<Form.Label className="d-flex justify-content-between align-items-center">
-											<span>
-												<FaKey className="me-2" />
-												Password *
-											</span>
-											<Button
-												variant="outline-primary"
-												size="sm"
-												type="button"
-												onClick={generateRandomPassword}
-											>
-												<FaRandom className="me-1" />
-												Generate
-											</Button>
-										</Form.Label>
-										<InputGroup>
-											<Form.Control
-												type={showPassword ? "text" : "password"}
-												name="password"
-												value={formData.password}
-												onChange={handleChange}
-												placeholder="Enter password"
-												isInvalid={!!errors.password}
-											/>
-											<Button
-												variant="outline-secondary"
-												type="button"
-												onClick={() => setShowPassword(!showPassword)}
-											>
-												{showPassword ? <FaEyeSlash /> : <FaEye />}
-											</Button>
-										</InputGroup>
-										<Form.Control.Feedback type="invalid">
-											{errors.password}
-										</Form.Control.Feedback>
-									</Form.Group>
-								</Col>
-							</Row>
-
-							<Row>
-								<Col md={6}>
-									<Form.Group className="mb-3">
-										<Form.Label>
-											<FaKey className="me-2" />
-											Confirm Password *
-										</Form.Label>
-										<InputGroup>
-											<Form.Control
-												type={showConfirmPassword ? "text" : "password"}
-												name="confirmPassword"
-												value={formData.confirmPassword}
-												onChange={handleChange}
-												placeholder="Confirm password"
-												isInvalid={!!errors.confirmPassword}
-											/>
-											<Button
-												variant="outline-secondary"
-												type="button"
-												onClick={() =>
-													setShowConfirmPassword(!showConfirmPassword)
-												}
-											>
-												{showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-											</Button>
-										</InputGroup>
-										<Form.Control.Feedback type="invalid">
-											{errors.confirmPassword}
-										</Form.Control.Feedback>
-									</Form.Group>
-								</Col>
-								<Col md={6}>
-									<div className="mt-4 pt-2">
-										<div className="alert alert-info">
-											<small>
-												<strong>Note:</strong> Faculty will receive login
-												credentials and can access the Faculty Dashboard with
-												these credentials.
-											</small>
-										</div>
+								<Col md={12}>
+									<div className="alert alert-info">
+										<strong>Login Details:</strong>
+										<br />
+										<small>
+											<strong>Email:</strong>{" "}
+											{formData.email || "Will use faculty email"}
+											<br />
+											<strong>Default Password:</strong> faculty123
+										</small>
+										<br />
+										<small className="text-muted">
+											Faculty can login with their email address and the default
+											password "faculty123". They should change this password
+											after first login.
+										</small>
 									</div>
 								</Col>
 							</Row>

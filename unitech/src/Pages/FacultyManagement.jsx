@@ -69,6 +69,8 @@ const FacultyManagement = () => {
 	const [selectedForBulkDelete, setSelectedForBulkDelete] = useState([]);
 	const [localSearchTerm, setLocalSearchTerm] = useState(filters.search);
 	const [localDepartment, setLocalDepartment] = useState(filters.department);
+	const [lastFacultyCount, setLastFacultyCount] = useState(0);
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	// Filtered faculty based on current filters
 	const filteredFaculty = faculty.filter((member) => {
@@ -104,6 +106,89 @@ const FacultyManagement = () => {
 		});
 		fetchDepartments();
 	}, [fetchFaculty, fetchDepartments]); // Include dependencies
+
+	// Add useEffect to watch for faculty list changes and update UI
+	useEffect(() => {
+		// Force re-render when faculty list changes
+		// This ensures the UI updates immediately after creating/updating faculty
+		if (faculty.length > 0) {
+			console.log("Faculty list updated:", faculty.length, "members");
+		}
+		// Update the last faculty count
+		setLastFacultyCount(faculty.length);
+	}, [faculty, setLastFacultyCount]); // Watch for changes in faculty array
+
+	// Add useEffect to track faculty count changes
+	useEffect(() => {
+		if (faculty.length !== lastFacultyCount && faculty.length > 0) {
+			console.log(
+				`Faculty count changed from ${lastFacultyCount} to ${faculty.length}`
+			);
+			if (faculty.length > lastFacultyCount) {
+				console.log("New faculty member added!");
+			}
+		}
+	}, [faculty.length, lastFacultyCount]);
+
+	// Add useEffect to handle refresh trigger
+	useEffect(() => {
+		if (refreshTrigger > 0) {
+			console.log("Refresh trigger activated:", refreshTrigger);
+			// Force re-fetch faculty data
+			fetchFaculty({
+				search: localSearchTerm,
+				department: localDepartment === "All" ? "" : localDepartment,
+				page: 1,
+				limit: 100,
+			});
+		}
+	}, [refreshTrigger, fetchFaculty, localSearchTerm, localDepartment]);
+
+	// Function to refresh faculty list
+	const refreshFacultyList = async () => {
+		try {
+			await fetchFaculty({
+				search: localSearchTerm,
+				department: localDepartment === "All" ? "" : localDepartment,
+				page: 1,
+				limit: 100,
+			});
+		} catch (error) {
+			console.error("Error refreshing faculty list:", error);
+		}
+	};
+
+	// Function to handle successful faculty save operations
+	const handleFacultySuccess = async () => {
+		try {
+			console.log("Faculty operation successful, refreshing list...");
+
+			// Multiple refresh strategies to ensure the list updates
+
+			// 1. Force refresh the faculty list
+			await refreshFacultyList();
+
+			// 2. Trigger a refresh by updating the trigger state
+			setRefreshTrigger((prev) => prev + 1);
+
+			// 3. Alternative: Directly call fetchFaculty again
+			setTimeout(async () => {
+				await fetchFaculty({
+					search: "",
+					department: "All",
+					page: 1,
+					limit: 100,
+				});
+			}, 100);
+
+			// 4. Force a small delay to ensure state updates
+			setTimeout(() => {
+				console.log("Faculty list refreshed. Current count:", faculty.length);
+			}, 500);
+		} catch (error) {
+			console.error("Error refreshing after faculty save:", error);
+		}
+	};
 
 	// Use client-side filtering for better performance
 	// Only make API calls for complex searches or when needed
@@ -166,6 +251,7 @@ const FacultyManagement = () => {
 			} else {
 				// Add new faculty
 				if (createLogin) {
+					// Use FacultyService directly for login creation
 					await FacultyService.createFacultyWithLogin(facultyInfo, loginData);
 				} else {
 					await createFaculty(facultyInfo);
@@ -176,10 +262,18 @@ const FacultyManagement = () => {
 			setEditingFaculty(null);
 
 			// Show success message
-			console.log(
-				"Faculty saved successfully" +
-					(createLogin ? " with login credentials" : "")
-			);
+			const message = editingFaculty
+				? "Faculty updated successfully" +
+				  (createLogin ? " with login credentials" : "")
+				: "Faculty added successfully" +
+				  (createLogin ? " with login credentials" : "");
+
+			console.log(message);
+
+			// Small delay to ensure UI updates properly
+			setTimeout(() => {
+				console.log("Faculty list should now show", faculty.length, "members");
+			}, 100);
 		} catch (error) {
 			console.error("Error saving faculty:", error);
 			// Error will be handled by the context
@@ -557,6 +651,7 @@ const FacultyManagement = () => {
 					onHide={() => setShowFormModal(false)}
 					faculty={editingFaculty}
 					onSave={handleSaveFaculty}
+					onSuccess={handleFacultySuccess}
 				/>
 
 				{/* Faculty View Modal */}
