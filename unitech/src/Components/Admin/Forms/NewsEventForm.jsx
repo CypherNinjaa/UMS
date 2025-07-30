@@ -106,7 +106,88 @@ const NewsEventForm = ({
 		}
 	}, [show, editData]);
 
-	const handleInputChange = (e) => {
+	// Strict validation handlers for text-only fields
+	const handleTextInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow only letters, spaces, hyphens, apostrophes, and dots
+		const textOnlyRegex = /^[a-zA-Z\s\-'.]*$/;
+		if (textOnlyRegex.test(value)) {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	// Handler for numeric time inputs (hours and minutes)
+	const handleTimeInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow only numbers and colons for time format
+		const timeRegex = /^[0-9:]*$/;
+		if (timeRegex.test(value)) {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	// Handler for alphanumeric fields (like tags, URLs)
+	const handleAlphanumericInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow letters, numbers, spaces, and common punctuation
+		const alphanumericRegex = /^[a-zA-Z0-9\s\-_.,!@#$%^&*()+=]*$/;
+		if (alphanumericRegex.test(value)) {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	// Handler for general content that allows all characters
+	const handleContentInputChange = (e) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	// Handler for checkboxes and selects
+	const handleSelectInputChange = (e) => {
 		const { name, value, type, checked } = e.target;
 		setFormData((prev) => ({
 			...prev,
@@ -265,7 +346,7 @@ const NewsEventForm = ({
 									type="text"
 									name="title"
 									value={formData.title}
-									onChange={handleInputChange}
+									onChange={handleAlphanumericInputChange}
 									isInvalid={!!errors.title}
 									placeholder="Enter title (3-255 characters)"
 								/>
@@ -277,6 +358,9 @@ const NewsEventForm = ({
 										{formData.title.length}/255 characters
 									</Form.Text>
 								</div>
+								<Form.Text className="text-muted small">
+									Title can contain letters, numbers, and punctuation
+								</Form.Text>
 							</Form.Group>
 						</Col>
 						<Col md={4}>
@@ -285,7 +369,7 @@ const NewsEventForm = ({
 								<Form.Select
 									name="type"
 									value={formData.type}
-									onChange={handleInputChange}
+									onChange={handleSelectInputChange}
 								>
 									<option value="News">News</option>
 									<option value="Event">Event</option>
@@ -301,7 +385,7 @@ const NewsEventForm = ({
 								<Form.Select
 									name="category"
 									value={formData.category}
-									onChange={handleInputChange}
+									onChange={handleSelectInputChange}
 									isInvalid={!!errors.category}
 								>
 									<option value="">Select Category</option>
@@ -323,7 +407,7 @@ const NewsEventForm = ({
 									type="text"
 									name="author"
 									value={formData.author}
-									onChange={handleInputChange}
+									onChange={handleTextInputChange}
 									isInvalid={!!errors.author}
 									placeholder="Enter author name (2-255 characters)"
 								/>
@@ -335,6 +419,9 @@ const NewsEventForm = ({
 										{formData.author.length}/255 characters
 									</Form.Text>
 								</div>
+								<Form.Text className="text-muted small">
+									Author name can only contain letters and spaces
+								</Form.Text>
 							</Form.Group>
 						</Col>
 					</Row>
@@ -345,7 +432,7 @@ const NewsEventForm = ({
 							rows={3}
 							name="description"
 							value={formData.description}
-							onChange={handleInputChange}
+							onChange={handleContentInputChange}
 							isInvalid={!!errors.description}
 							placeholder="Enter a brief description (10-1000 characters)"
 						/>
@@ -365,7 +452,7 @@ const NewsEventForm = ({
 							rows={6}
 							name="content"
 							value={formData.content}
-							onChange={handleInputChange}
+							onChange={handleContentInputChange}
 							isInvalid={!!errors.content}
 							placeholder="Enter the full content (minimum 20 characters)"
 						/>
@@ -389,7 +476,7 @@ const NewsEventForm = ({
 									type="date"
 									name="publishDate"
 									value={formData.publishDate}
-									onChange={handleInputChange}
+									onChange={handleSelectInputChange}
 									isInvalid={!!errors.publishDate}
 								/>
 								<Form.Control.Feedback type="invalid">
@@ -403,7 +490,7 @@ const NewsEventForm = ({
 								<Form.Select
 									name="status"
 									value={formData.status}
-									onChange={handleInputChange}
+									onChange={handleSelectInputChange}
 								>
 									<option value="Draft">Draft</option>
 									<option value="Published">Published</option>
@@ -427,7 +514,7 @@ const NewsEventForm = ({
 											type="date"
 											name="eventDate"
 											value={formData.eventDate}
-											onChange={handleInputChange}
+											onChange={handleSelectInputChange}
 											isInvalid={!!errors.eventDate}
 										/>
 										<Form.Control.Feedback type="invalid">
@@ -445,7 +532,7 @@ const NewsEventForm = ({
 											type="time"
 											name="eventTime"
 											value={formData.eventTime}
-											onChange={handleInputChange}
+											onChange={handleTimeInputChange}
 										/>
 									</Form.Group>
 								</Col>
@@ -460,9 +547,12 @@ const NewsEventForm = ({
 									type="text"
 									name="location"
 									value={formData.location}
-									onChange={handleInputChange}
+									onChange={handleAlphanumericInputChange}
 									placeholder="Enter event location"
 								/>
+								<Form.Text className="text-muted small">
+									Location can contain letters, numbers, and common punctuation
+								</Form.Text>
 							</Form.Group>
 						</>
 					)}
@@ -475,7 +565,7 @@ const NewsEventForm = ({
 							type="url"
 							name="image"
 							value={formData.image}
-							onChange={handleInputChange}
+							onChange={handleAlphanumericInputChange}
 							placeholder="Enter image URL (optional)"
 						/>
 					</Form.Group>
@@ -522,7 +612,7 @@ const NewsEventForm = ({
 							name="featured"
 							label="Featured Item"
 							checked={formData.featured}
-							onChange={handleInputChange}
+							onChange={handleSelectInputChange}
 						/>
 					</Form.Group>
 					{Object.keys(errors).length > 0 && (
