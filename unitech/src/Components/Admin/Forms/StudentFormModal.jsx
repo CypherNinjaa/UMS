@@ -24,6 +24,18 @@ import {
 const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 	const isEdit = student !== null;
 
+	// Helper to get today's date in YYYY-MM-DD format
+	const getTodayDate = () => {
+		return new Date().toISOString().split("T")[0];
+	};
+
+	// Helper to get a reasonable default birth date (18 years ago)
+	const getDefaultBirthDate = () => {
+		const date = new Date();
+		date.setFullYear(date.getFullYear() - 18);
+		return date.toISOString().split("T")[0];
+	};
+
 	const [formData, setFormData] = useState({
 		studentId: student?.studentId || "",
 		firstName: student?.firstName || "",
@@ -36,8 +48,8 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 		status: student?.status || "Active",
 		gpa: student?.gpa || "",
 		credits: student?.credits || "",
-		enrollmentDate: student?.enrollmentDate || "",
-		dateOfBirth: student?.dateOfBirth || "",
+		enrollmentDate: student?.enrollmentDate || getTodayDate(),
+		dateOfBirth: student?.dateOfBirth || getDefaultBirthDate(),
 		address: student?.address || "",
 		guardianName: student?.guardianName || "",
 		guardianPhone: student?.guardianPhone || "",
@@ -178,10 +190,14 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 
 			const studentData = {
 				...formData,
-				id: isEdit ? student.id : Date.now(),
 				gpa: parseFloat(formData.gpa) || 0,
 				credits: parseInt(formData.credits) || 0,
 			};
+
+			// Only include ID for existing students being edited
+			if (isEdit && student.id) {
+				studentData.id = student.id;
+			}
 
 			onSave(studentData);
 			handleClose();
@@ -205,8 +221,8 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 			status: "Active",
 			gpa: "",
 			credits: "",
-			enrollmentDate: "",
-			dateOfBirth: "",
+			enrollmentDate: getTodayDate(),
+			dateOfBirth: getDefaultBirthDate(),
 			address: "",
 			guardianName: "",
 			guardianPhone: "",

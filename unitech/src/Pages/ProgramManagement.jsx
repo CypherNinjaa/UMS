@@ -120,8 +120,8 @@ const ProgramManagement = () => {
 		return matchesSearch && matchesType && matchesDepartment && matchesStatus;
 	});
 
-	// Debug: Check for duplicate keys
-	React.useEffect(() => {
+	// Debug: Check for duplicate keys (moved to useMemo for performance)
+	React.useMemo(() => {
 		const keys = filteredPrograms.map(
 			(program, index) =>
 				program.id || program.program_id || program.code || `fallback-${index}`
@@ -132,24 +132,35 @@ const ProgramManagement = () => {
 		}
 	}, [filteredPrograms]);
 
-	// Load data on component mount
+	// Load data on component mount (run only once)
 	useEffect(() => {
-		fetchPrograms({
-			search: "",
-			department: "All",
-			type: "All",
-			status: "All",
-			page: 1,
-			limit: 100, // Fetch more data at once to reduce API calls
-		});
-		fetchDepartments();
-		fetchStatistics();
+		const loadInitialData = async () => {
+			try {
+				await fetchPrograms({
+					search: "",
+					department: "All",
+					type: "All",
+					status: "All",
+					page: 1,
+					limit: 100, // Fetch more data at once to reduce API calls
+				});
+				await fetchDepartments();
+				await fetchStatistics();
+			} catch (error) {
+				console.error("Error loading initial data:", error);
+			}
+		};
 
-		// Debug: Log programs data structure
+		loadInitialData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []); // Empty dependency array to run only once - functions are memoized in context
+
+	// Debug: Log programs data structure (only when programs actually change)
+	useEffect(() => {
 		if (programs.length > 0) {
 			console.log("Programs data structure:", programs[0]);
 		}
-	}, [fetchPrograms, fetchDepartments, fetchStatistics, programs]);
+	}, [programs]);
 
 	// Unused legacy handlers - kept for compatibility
 	// const handleDelete = (program) => {

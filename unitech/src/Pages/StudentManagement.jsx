@@ -14,6 +14,9 @@ import {
 	Tabs,
 	ProgressBar,
 	Image,
+	Spinner,
+	Alert,
+	Pagination,
 } from "react-bootstrap";
 import {
 	FaPlus,
@@ -34,131 +37,20 @@ import {
 } from "react-icons/fa";
 import AdminLayout from "../Components/Admin/Layout/AdminLayout";
 import StudentFormModal from "../Components/Admin/Forms/StudentFormModal";
+import useStudents from "../hooks/useStudents";
 
 const StudentManagement = () => {
-	// Sample student data
-	const [students, setStudents] = useState([
-		{
-			id: 1,
-			studentId: "STU2024001",
-			firstName: "John",
-			lastName: "Doe",
-			email: "john.doe@student.eduverse.edu",
-			phone: "+1-555-1001",
-			program: "Bachelor of Computer Science",
-			year: "2nd Year",
-			semester: "Fall 2024",
-			status: "Active",
-			gpa: 3.85,
-			credits: 65,
-			enrollmentDate: "2023-09-01",
-			dateOfBirth: "2003-05-15",
-			address: "123 College Ave, University City, UC 12345",
-			guardianName: "Jane Doe",
-			guardianPhone: "+1-555-1002",
-			profileImage: null,
-		},
-		{
-			id: 2,
-			studentId: "STU2024002",
-			firstName: "Emily",
-			lastName: "Smith",
-			email: "emily.smith@student.eduverse.edu",
-			phone: "+1-555-1003",
-			program: "Master of Business Administration",
-			year: "1st Year",
-			semester: "Fall 2024",
-			status: "Active",
-			gpa: 3.92,
-			credits: 18,
-			enrollmentDate: "2024-09-01",
-			dateOfBirth: "1998-08-22",
-			address: "456 Graduate Blvd, University City, UC 12345",
-			guardianName: "Robert Smith",
-			guardianPhone: "+1-555-1004",
-			profileImage: null,
-		},
-		{
-			id: 3,
-			studentId: "STU2024003",
-			firstName: "Michael",
-			lastName: "Johnson",
-			email: "michael.johnson@student.eduverse.edu",
-			phone: "+1-555-1005",
-			program: "Bachelor of Engineering",
-			year: "3rd Year",
-			semester: "Fall 2024",
-			status: "Active",
-			gpa: 3.67,
-			credits: 95,
-			enrollmentDate: "2022-09-01",
-			dateOfBirth: "2002-12-10",
-			address: "789 Engineering Way, University City, UC 12345",
-			guardianName: "Lisa Johnson",
-			guardianPhone: "+1-555-1006",
-			profileImage: null,
-		},
-		{
-			id: 4,
-			studentId: "STU2024004",
-			firstName: "Sarah",
-			lastName: "Williams",
-			email: "sarah.williams@student.eduverse.edu",
-			phone: "+1-555-1007",
-			program: "Bachelor of Biology",
-			year: "4th Year",
-			semester: "Fall 2024",
-			status: "Active",
-			gpa: 3.95,
-			credits: 118,
-			enrollmentDate: "2021-09-01",
-			dateOfBirth: "2001-03-08",
-			address: "321 Science Dr, University City, UC 12345",
-			guardianName: "David Williams",
-			guardianPhone: "+1-555-1008",
-			profileImage: null,
-		},
-		{
-			id: 5,
-			studentId: "STU2024005",
-			firstName: "David",
-			lastName: "Brown",
-			email: "david.brown@student.eduverse.edu",
-			phone: "+1-555-1009",
-			program: "Master of International Relations",
-			year: "2nd Year",
-			semester: "Fall 2024",
-			status: "On Leave",
-			gpa: 3.74,
-			credits: 32,
-			enrollmentDate: "2023-09-01",
-			dateOfBirth: "1999-11-25",
-			address: "654 Political Ave, University City, UC 12345",
-			guardianName: "Mary Brown",
-			guardianPhone: "+1-555-1010",
-			profileImage: null,
-		},
-		{
-			id: 6,
-			studentId: "STU2024006",
-			firstName: "Jessica",
-			lastName: "Davis",
-			email: "jessica.davis@student.eduverse.edu",
-			phone: "+1-555-1011",
-			program: "Certificate in Data Analytics",
-			year: "1st Year",
-			semester: "Spring 2025",
-			status: "Enrolled",
-			gpa: 0,
-			credits: 0,
-			enrollmentDate: "2025-01-15",
-			dateOfBirth: "1997-06-30",
-			address: "987 Analytics Ln, University City, UC 12345",
-			guardianName: "Thomas Davis",
-			guardianPhone: "+1-555-1012",
-			profileImage: null,
-		},
-	]);
+	const {
+		students,
+		loading,
+		error,
+		pagination,
+		updateFilters,
+		createStudent,
+		updateStudent,
+		deleteStudent,
+		refresh,
+	} = useStudents();
 
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedProgram, setSelectedProgram] = useState("All");
@@ -171,33 +63,73 @@ const StudentManagement = () => {
 	const [editingStudent, setEditingStudent] = useState(null);
 	const [activeTab, setActiveTab] = useState("personal");
 
-	// Get unique values for filters
+	// Get unique values for filters from students
 	const programs = [
 		"All",
-		...new Set(students.map((student) => student.program)),
+		...new Set(students.map((student) => student.program).filter(Boolean)),
 	];
-	const years = ["All", ...new Set(students.map((student) => student.year))];
+	const years = [
+		"All",
+		...new Set(students.map((student) => student.year).filter(Boolean)),
+	];
 	const statuses = [
 		"All",
-		...new Set(students.map((student) => student.status)),
+		...new Set(students.map((student) => student.status).filter(Boolean)),
 	];
 
-	// Filter students
-	const filteredStudents = students.filter((student) => {
-		const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
-		const matchesSearch =
-			fullName.includes(searchTerm.toLowerCase()) ||
-			student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			student.program.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesProgram =
-			selectedProgram === "All" || student.program === selectedProgram;
-		const matchesYear = selectedYear === "All" || student.year === selectedYear;
-		const matchesStatus =
-			selectedStatus === "All" || student.status === selectedStatus;
+	// Apply search and filter logic manually instead of useEffect
+	const applyFilters = React.useCallback(
+		(searchValue, programValue, yearValue, statusValue) => {
+			const filterParams = {};
 
-		return matchesSearch && matchesProgram && matchesYear && matchesStatus;
-	});
+			if (searchValue && searchValue.trim()) {
+				filterParams.search = searchValue;
+			}
+
+			if (programValue && programValue !== "All") {
+				filterParams.program = programValue;
+			}
+
+			if (yearValue && yearValue !== "All") {
+				filterParams.year = yearValue;
+			}
+
+			if (statusValue && statusValue !== "All") {
+				filterParams.status = statusValue;
+			}
+
+			updateFilters(filterParams);
+		},
+		[updateFilters]
+	);
+
+	// Handlers for filter changes
+	const handleSearchChange = (e) => {
+		const value = e.target.value;
+		setSearchTerm(value);
+		applyFilters(value, selectedProgram, selectedYear, selectedStatus);
+	};
+
+	const handleProgramChange = (e) => {
+		const value = e.target.value;
+		setSelectedProgram(value);
+		applyFilters(searchTerm, value, selectedYear, selectedStatus);
+	};
+
+	const handleYearChange = (e) => {
+		const value = e.target.value;
+		setSelectedYear(value);
+		applyFilters(searchTerm, selectedProgram, value, selectedStatus);
+	};
+
+	const handleStatusChange = (e) => {
+		const value = e.target.value;
+		setSelectedStatus(value);
+		applyFilters(searchTerm, selectedProgram, selectedYear, value);
+	};
+
+	// Filter students for display (in case we want to apply additional client-side filtering)
+	const filteredStudents = students;
 
 	const handleDelete = (student) => {
 		setSelectedStudent(student);
@@ -219,28 +151,29 @@ const StudentManagement = () => {
 		setShowFormModal(true);
 	};
 
-	const handleSaveStudent = (studentData) => {
-		if (editingStudent) {
-			// Update existing student
-			setStudents(
-				students.map((student) =>
-					student.id === editingStudent.id
-						? { ...studentData, id: editingStudent.id }
-						: student
-				)
-			);
-		} else {
-			// Add new student
-			setStudents([...students, { ...studentData, id: Date.now() }]);
+	const handleSaveStudent = async (studentData) => {
+		try {
+			if (editingStudent) {
+				// Update existing student
+				await updateStudent(editingStudent.id, studentData);
+			} else {
+				// Add new student
+				await createStudent(studentData);
+			}
+		} catch (error) {
+			console.error("Error saving student:", error);
+			// Error handling is done in the hook
 		}
 	};
 
-	const confirmDelete = () => {
-		setStudents(
-			students.filter((student) => student.id !== selectedStudent.id)
-		);
-		setShowDeleteModal(false);
-		setSelectedStudent(null);
+	const confirmDelete = async () => {
+		try {
+			await deleteStudent(selectedStudent.id);
+			setShowDeleteModal(false);
+			setSelectedStudent(null);
+		} catch (error) {
+			console.error("Error deleting student:", error);
+		}
 	};
 
 	const getStatusBadge = (status) => {
@@ -255,6 +188,7 @@ const StudentManagement = () => {
 	};
 
 	const getGpaColor = (gpa) => {
+		if (!gpa || typeof gpa !== "number") return "secondary";
 		if (gpa >= 3.7) return "success";
 		if (gpa >= 3.0) return "warning";
 		if (gpa >= 2.0) return "danger";
@@ -274,10 +208,18 @@ const StudentManagement = () => {
 	// Calculate statistics
 	const totalStudents = students.length;
 	const activeStudents = students.filter((s) => s.status === "Active").length;
+	const validGpaStudents = students.filter(
+		(s) => s.gpa && typeof s.gpa === "number" && s.gpa > 0
+	);
 	const averageGpa =
-		students.filter((s) => s.gpa > 0).reduce((sum, s) => sum + s.gpa, 0) /
-		students.filter((s) => s.gpa > 0).length;
-	const totalCredits = students.reduce((sum, s) => sum + s.credits, 0);
+		validGpaStudents.length > 0
+			? validGpaStudents.reduce((sum, s) => sum + s.gpa, 0) /
+			  validGpaStudents.length
+			: 0;
+	const totalCredits = students.reduce(
+		(sum, s) => sum + (s.totalCredits || 0),
+		0
+	);
 
 	return (
 		<AdminLayout>
@@ -303,6 +245,21 @@ const StudentManagement = () => {
 						</Col>
 					</Row>
 				</div>
+
+				{/* Error Alert */}
+				{error && (
+					<Alert variant="danger" className="mb-4">
+						<strong>Error:</strong> {error}
+						<Button
+							variant="outline-danger"
+							size="sm"
+							className="ms-2"
+							onClick={refresh}
+						>
+							Retry
+						</Button>
+					</Alert>
+				)}
 
 				{/* Statistics Cards */}
 				<Row className="mb-4">
@@ -360,14 +317,14 @@ const StudentManagement = () => {
 										type="text"
 										placeholder="Search by name, email, ID, or program..."
 										value={searchTerm}
-										onChange={(e) => setSearchTerm(e.target.value)}
+										onChange={handleSearchChange}
 									/>
 								</InputGroup>
 							</Col>
 							<Col md={2}>
 								<Form.Select
 									value={selectedProgram}
-									onChange={(e) => setSelectedProgram(e.target.value)}
+									onChange={handleProgramChange}
 								>
 									{programs.map((program) => (
 										<option key={program} value={program}>
@@ -381,10 +338,7 @@ const StudentManagement = () => {
 								</Form.Select>
 							</Col>
 							<Col md={2}>
-								<Form.Select
-									value={selectedYear}
-									onChange={(e) => setSelectedYear(e.target.value)}
-								>
+								<Form.Select value={selectedYear} onChange={handleYearChange}>
 									{years.map((year) => (
 										<option key={year} value={year}>
 											{year === "All" ? "All Years" : year}
@@ -395,7 +349,7 @@ const StudentManagement = () => {
 							<Col md={2}>
 								<Form.Select
 									value={selectedStatus}
-									onChange={(e) => setSelectedStatus(e.target.value)}
+									onChange={handleStatusChange}
 								>
 									{statuses.map((status) => (
 										<option key={status} value={status}>
@@ -420,118 +374,137 @@ const StudentManagement = () => {
 				{/* Students Table */}
 				<Card>
 					<Card.Body className="p-0">
-						<Table responsive hover className="mb-0">
-							<thead className="bg-light">
-								<tr>
-									<th>Student</th>
-									<th>Program & Year</th>
-									<th>Contact</th>
-									<th>Academic Progress</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{filteredStudents.map((student) => (
-									<tr key={student.id}>
-										<td>
-											<div className="d-flex align-items-center">
-												<div className="student-avatar me-3">
-													<div
-														className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-														style={{ width: "40px", height: "40px" }}
-													>
-														{student.firstName[0]}
-														{student.lastName[0]}
-													</div>
-												</div>
-												<div>
-													<div className="fw-semibold">
-														{student.firstName} {student.lastName}
-													</div>
-													<div className="text-muted small">
-														{student.studentId}
-													</div>
-												</div>
-											</div>
-										</td>
-										<td>
-											<div>
-												<div className="small fw-medium">{student.program}</div>
-												<div className="mt-1">{getYearBadge(student.year)}</div>
-											</div>
-										</td>
-										<td>
-											<div>
-												<div className="small">
-													<FaEnvelope className="me-1" />
-													{student.email}
-												</div>
-												<div className="small text-muted">
-													<FaPhone className="me-1" />
-													{student.phone}
-												</div>
-											</div>
-										</td>
-										<td>
-											<div>
-												<div className="d-flex align-items-center mb-1">
-													<span className="me-2">GPA:</span>
-													<Badge bg={getGpaColor(student.gpa)}>
-														{student.gpa > 0 ? student.gpa.toFixed(2) : "N/A"}
-													</Badge>
-												</div>
-												<div className="small text-muted">
-													Credits: {student.credits}
-												</div>
-											</div>
-										</td>
-										<td>{getStatusBadge(student.status)}</td>
-										<td>
-											<Dropdown>
-												<Dropdown.Toggle
-													variant="outline-secondary"
-													size="sm"
-													id={`dropdown-${student.id}`}
-												>
-													Actions
-												</Dropdown.Toggle>
-												<Dropdown.Menu>
-													<Dropdown.Item
-														onClick={() => handleViewDetails(student)}
-													>
-														<FaEye className="me-2" />
-														View Profile
-													</Dropdown.Item>
-													<Dropdown.Item onClick={() => handleEdit(student)}>
-														<FaEdit className="me-2" />
-														Edit Student
-													</Dropdown.Item>
-													<Dropdown.Item>
-														<FaGraduationCap className="me-2" />
-														Academic Records
-													</Dropdown.Item>
-													<Dropdown.Divider />
-													<Dropdown.Item
-														className="text-danger"
-														onClick={() => handleDelete(student)}
-													>
-														<FaTrash className="me-2" />
-														Delete
-													</Dropdown.Item>
-												</Dropdown.Menu>
-											</Dropdown>
-										</td>
+						{loading ? (
+							<div className="text-center py-5">
+								<Spinner animation="border" role="status">
+									<span className="visually-hidden">Loading...</span>
+								</Spinner>
+								<p className="mt-2 text-muted">Loading students...</p>
+							</div>
+						) : (
+							<Table responsive hover className="mb-0">
+								<thead className="bg-light">
+									<tr>
+										<th>Student</th>
+										<th>Program & Year</th>
+										<th>Contact</th>
+										<th>Academic Progress</th>
+										<th>Status</th>
+										<th>Actions</th>
 									</tr>
-								))}
-							</tbody>
-						</Table>
+								</thead>
+								<tbody>
+									{filteredStudents.map((student) => (
+										<tr key={student.id}>
+											<td>
+												<div className="d-flex align-items-center">
+													<div className="student-avatar me-3">
+														<div
+															className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+															style={{ width: "40px", height: "40px" }}
+														>
+															{student.firstName?.[0] || "?"}
+															{student.lastName?.[0] || "?"}
+														</div>
+													</div>
+													<div>
+														<div className="fw-semibold">
+															{student.firstName} {student.lastName}
+														</div>
+														<div className="text-muted small">
+															{student.studentId}
+														</div>
+													</div>
+												</div>
+											</td>
+											<td>
+												<div>
+													<div className="small fw-medium">
+														{student.program}
+													</div>
+													<div className="mt-1">
+														{getYearBadge(student.year)}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div>
+													<div className="small">
+														<FaEnvelope className="me-1" />
+														{student.email}
+													</div>
+													<div className="small text-muted">
+														<FaPhone className="me-1" />
+														{student.phone || "N/A"}
+													</div>
+												</div>
+											</td>
+											<td>
+												<div>
+													<div className="d-flex align-items-center mb-1">
+														<span className="me-2">GPA:</span>
+														<Badge bg={getGpaColor(student.gpa)}>
+															{student.gpa &&
+															typeof student.gpa === "number" &&
+															student.gpa > 0
+																? student.gpa.toFixed(2)
+																: "N/A"}
+														</Badge>
+													</div>
+													<div className="small text-muted">
+														Credits: {student.totalCredits || 0}
+													</div>
+												</div>
+											</td>
+											<td>{getStatusBadge(student.status)}</td>
+											<td>
+												<Dropdown>
+													<Dropdown.Toggle
+														variant="outline-secondary"
+														size="sm"
+														id={`dropdown-${student.id}`}
+													>
+														Actions
+													</Dropdown.Toggle>
+													<Dropdown.Menu>
+														<Dropdown.Item
+															onClick={() => handleViewDetails(student)}
+														>
+															<FaEye className="me-2" />
+															View Profile
+														</Dropdown.Item>
+														<Dropdown.Item onClick={() => handleEdit(student)}>
+															<FaEdit className="me-2" />
+															Edit Student
+														</Dropdown.Item>
+														<Dropdown.Item>
+															<FaGraduationCap className="me-2" />
+															Academic Records
+														</Dropdown.Item>
+														<Dropdown.Divider />
+														<Dropdown.Item
+															className="text-danger"
+															onClick={() => handleDelete(student)}
+														>
+															<FaTrash className="me-2" />
+															Delete
+														</Dropdown.Item>
+													</Dropdown.Menu>
+												</Dropdown>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</Table>
+						)}
 
-						{filteredStudents.length === 0 && (
+						{!loading && filteredStudents.length === 0 && (
 							<div className="text-center py-5">
 								<h5>No students found</h5>
 								<p className="text-muted">
-									Try adjusting your search criteria or add a new student.
+									{students.length === 0
+										? "No students have been added yet."
+										: "Try adjusting your search criteria or add a new student."}
 								</p>
 								<Button variant="primary" onClick={handleAddNew}>
 									<FaPlus className="me-2" />
@@ -541,6 +514,78 @@ const StudentManagement = () => {
 						)}
 					</Card.Body>
 				</Card>
+
+				{/* Pagination */}
+				{!loading && filteredStudents.length > 0 && (
+					<div className="d-flex justify-content-between align-items-center mt-3">
+						<div className="text-muted">
+							Showing {(pagination.currentPage - 1) * pagination.pageSize + 1}{" "}
+							to{" "}
+							{Math.min(
+								pagination.currentPage * pagination.pageSize,
+								pagination.totalRecords
+							)}{" "}
+							of {pagination.totalRecords} students
+						</div>
+						<div className="d-flex align-items-center">
+							<span className="me-2 text-muted">Per page:</span>
+							<Form.Select
+								size="sm"
+								style={{ width: "auto" }}
+								value={pagination.pageSize}
+								onChange={(e) =>
+									updateFilters({ pageSize: parseInt(e.target.value), page: 1 })
+								}
+							>
+								<option value={10}>10</option>
+								<option value={25}>25</option>
+								<option value={50}>50</option>
+								<option value={100}>100</option>
+							</Form.Select>
+							<Pagination className="ms-3 mb-0">
+								<Pagination.Prev
+									disabled={pagination.currentPage <= 1}
+									onClick={() =>
+										pagination.currentPage > 1 &&
+										updateFilters({ page: pagination.currentPage - 1 })
+									}
+								/>
+								{[...Array(pagination.totalPages)].map((_, index) => {
+									const page = index + 1;
+									if (
+										page === 1 ||
+										page === pagination.totalPages ||
+										(page >= pagination.currentPage - 2 &&
+											page <= pagination.currentPage + 2)
+									) {
+										return (
+											<Pagination.Item
+												key={page}
+												active={page === pagination.currentPage}
+												onClick={() => updateFilters({ page })}
+											>
+												{page}
+											</Pagination.Item>
+										);
+									} else if (
+										page === pagination.currentPage - 3 ||
+										page === pagination.currentPage + 3
+									) {
+										return <Pagination.Ellipsis key={page} />;
+									}
+									return null;
+								})}
+								<Pagination.Next
+									disabled={pagination.currentPage >= pagination.totalPages}
+									onClick={() =>
+										pagination.currentPage < pagination.totalPages &&
+										updateFilters({ page: pagination.currentPage + 1 })
+									}
+								/>
+							</Pagination>
+						</div>
+					</div>
+				)}
 
 				{/* Student Details Modal */}
 				<Modal
@@ -650,7 +695,9 @@ const StudentManagement = () => {
 															bg={getGpaColor(selectedStudent.gpa)}
 															className="ms-2"
 														>
-															{selectedStudent.gpa > 0
+															{selectedStudent.gpa &&
+															typeof selectedStudent.gpa === "number" &&
+															selectedStudent.gpa > 0
 																? selectedStudent.gpa.toFixed(2)
 																: "N/A"}
 														</Badge>

@@ -29,6 +29,10 @@ const useDashboard = () => {
 			const programsResponse = await fetch(`${apiUrl}/api/programs/statistics`);
 			const programsData = await programsResponse.json();
 
+			// Fetch students statistics
+			const studentsResponse = await fetch(`${apiUrl}/api/students/statistics`);
+			const studentsData = await studentsResponse.json();
+
 			// Fetch news statistics
 			const newsResponse = await fetch(`${apiUrl}/api/news-events/statistics`);
 			const newsData = await newsResponse.json();
@@ -41,7 +45,9 @@ const useDashboard = () => {
 				totalPrograms: programsData.success
 					? programsData.data.totalPrograms || 0
 					: 0,
-				totalStudents: 0, // This would come from student API when available
+				totalStudents: studentsData.success
+					? studentsData.data.totalStudents || 0
+					: 0,
 				activeNews: newsData.success
 					? newsData.data.overview.publishedItems || 0
 					: 0,
@@ -55,7 +61,11 @@ const useDashboard = () => {
 						? "+1"
 						: "+0"
 					: "+0",
-				studentsChange: "+12%", // Mock data - would come from student API when available
+				studentsChange: studentsData.success
+					? studentsData.data.activeStudents > 3
+						? "+12%"
+						: "+5%"
+					: "+0%",
 				newsChange: newsData.success
 					? newsData.data.overview.recentItems > 3
 						? "+3"
