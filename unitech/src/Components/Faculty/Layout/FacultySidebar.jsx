@@ -2,7 +2,6 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
 	FaTachometerAlt,
-	FaCalendarAlt,
 	FaUsers,
 	FaClock,
 	FaClipboardCheck,
@@ -10,6 +9,7 @@ import {
 	FaUser,
 	FaCog,
 	FaSignOutAlt,
+	FaBook,
 } from "react-icons/fa";
 import { useAuth } from "../../../hooks/useAuth";
 import "./FacultyLayout.css";
@@ -25,12 +25,12 @@ function FacultySidebar() {
 			icon: FaTachometerAlt,
 		},
 		{
-			title: "Academic Calendar",
-			path: "/facultydashboard#calendar",
-			icon: FaCalendarAlt,
+			title: "My Courses",
+			path: "/facultydashboard#courses",
+			icon: FaBook,
 		},
 		{
-			title: "Students",
+			title: "My Students",
 			path: "/facultydashboard#students",
 			icon: FaUsers,
 		},
@@ -53,11 +53,6 @@ function FacultySidebar() {
 			title: "My Profile",
 			path: "/facultydashboard#profile",
 			icon: FaUser,
-		},
-		{
-			title: "Settings",
-			path: "/faculty/settings",
-			icon: FaCog,
 		},
 	];
 
