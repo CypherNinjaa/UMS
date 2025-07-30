@@ -91,6 +91,157 @@ const StudentFormModal = ({
 		}
 	}, [saveSuccess]);
 
+	// Strict input validation handlers
+	const handleTextInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow letters, spaces, hyphens, and apostrophes (NO NUMBERS)
+		const textRegex = /^[a-zA-Z\s\-']*$/;
+
+		if (textRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({ ...prev, [name]: "" }));
+			}
+
+			// Auto-generate student ID for new students (only for name fields)
+			if ((name === "firstName" || name === "lastName") && !isEdit) {
+				const firstName = name === "firstName" ? value : formData.firstName;
+				const lastName = name === "lastName" ? value : formData.lastName;
+
+				if (firstName && lastName) {
+					const currentYear = new Date().getFullYear();
+					const randomNum = Math.floor(Math.random() * 1000)
+						.toString()
+						.padStart(3, "0");
+					setFormData((prev) => ({
+						...prev,
+						studentId: `STU${currentYear}${randomNum}`,
+					}));
+				}
+			}
+
+			// Auto-generate email for new students (only for name fields)
+			if ((name === "firstName" || name === "lastName") && !isEdit) {
+				const firstName = name === "firstName" ? value : formData.firstName;
+				const lastName = name === "lastName" ? value : formData.lastName;
+
+				if (firstName && lastName) {
+					const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@student.eduverse.edu`;
+					setFormData((prev) => ({
+						...prev,
+						email: email,
+					}));
+				}
+			}
+		}
+	};
+
+	const handleNumberInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow positive numbers (integers and decimals)
+		const numberRegex = /^[0-9]*\.?[0-9]*$/;
+
+		// Prevent input if it's not a valid number format
+		if (value !== "" && !numberRegex.test(value)) {
+			return; // Don't update state if invalid format
+		}
+
+		// Prevent multiple decimal points
+		if (value.includes(".") && (value.match(/\./g) || []).length > 1) {
+			return;
+		}
+
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({ ...prev, [name]: "" }));
+		}
+	};
+
+	const handleIntegerInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow positive integers (no decimals)
+		const integerRegex = /^[0-9]*$/;
+
+		// Prevent input if it's not a valid integer format
+		if (value !== "" && !integerRegex.test(value)) {
+			return; // Don't update state if invalid format
+		}
+
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({ ...prev, [name]: "" }));
+		}
+	};
+
+	const handlePhoneInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow numbers, spaces, hyphens, parentheses, and plus sign for phone numbers
+		const phoneRegex = /^[0-9\s\-()++]*$/;
+
+		if (phoneRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({ ...prev, [name]: "" }));
+			}
+		}
+	};
+
+	const handleEmailInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow alphanumeric characters, dots, hyphens, underscores, and @ for email
+		const emailRegex = /^[a-zA-Z0-9.-_@]*$/;
+
+		if (emailRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({ ...prev, [name]: "" }));
+			}
+		}
+	};
+
+	const handleStudentIdInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow uppercase letters and numbers for student ID
+		const studentIdRegex = /^[A-Z0-9]*$/;
+
+		if (studentIdRegex.test(value.toUpperCase()) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value.toUpperCase(),
+			}));
+
+			// Clear error when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({ ...prev, [name]: "" }));
+			}
+		}
+	};
+
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
 		setFormData((prev) => ({
@@ -101,31 +252,6 @@ const StudentFormModal = ({
 		// Clear error when user starts typing
 		if (errors[name]) {
 			setErrors((prev) => ({ ...prev, [name]: "" }));
-		}
-
-		// Auto-generate student ID for new students
-		if (name === "firstName" || name === "lastName") {
-			if (!isEdit && formData.firstName && formData.lastName) {
-				const currentYear = new Date().getFullYear();
-				const randomNum = Math.floor(Math.random() * 1000)
-					.toString()
-					.padStart(3, "0");
-				setFormData((prev) => ({
-					...prev,
-					studentId: `STU${currentYear}${randomNum}`,
-				}));
-			}
-		}
-
-		// Auto-generate email for new students
-		if (name === "firstName" || name === "lastName") {
-			if (!isEdit && formData.firstName && formData.lastName) {
-				const email = `${formData.firstName.toLowerCase()}.${formData.lastName.toLowerCase()}@student.eduverse.edu`;
-				setFormData((prev) => ({
-					...prev,
-					email: email,
-				}));
-			}
 		}
 	};
 
@@ -288,11 +414,16 @@ const StudentFormModal = ({
 									type="text"
 									name="studentId"
 									value={formData.studentId}
-									onChange={handleChange}
+									onChange={isEdit ? handleStudentIdInputChange : handleChange}
 									placeholder="Auto-generated"
 									readOnly={isEdit}
 									isInvalid={!!errors.studentId}
 								/>
+								{!isEdit && (
+									<Form.Text className="text-muted">
+										Auto-generated based on name (letters and numbers only)
+									</Form.Text>
+								)}
 								<Form.Control.Feedback type="invalid">
 									{errors.studentId}
 								</Form.Control.Feedback>
@@ -335,10 +466,13 @@ const StudentFormModal = ({
 									type="text"
 									name="firstName"
 									value={formData.firstName}
-									onChange={handleChange}
+									onChange={handleTextInputChange}
 									isInvalid={!!errors.firstName}
 									placeholder="Enter first name"
 								/>
+								<Form.Text className="text-muted">
+									Letters only (no numbers)
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.firstName}
 								</Form.Control.Feedback>
@@ -351,10 +485,13 @@ const StudentFormModal = ({
 									type="text"
 									name="lastName"
 									value={formData.lastName}
-									onChange={handleChange}
+									onChange={handleTextInputChange}
 									isInvalid={!!errors.lastName}
 									placeholder="Enter last name"
 								/>
+								<Form.Text className="text-muted">
+									Letters only (no numbers)
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.lastName}
 								</Form.Control.Feedback>
@@ -373,10 +510,13 @@ const StudentFormModal = ({
 									type="email"
 									name="email"
 									value={formData.email}
-									onChange={handleChange}
+									onChange={handleEmailInputChange}
 									isInvalid={!!errors.email}
 									placeholder="student.email@eduverse.edu"
 								/>
+								<Form.Text className="text-muted">
+									Valid email format required
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.email}
 								</Form.Control.Feedback>
@@ -392,10 +532,13 @@ const StudentFormModal = ({
 									type="tel"
 									name="phone"
 									value={formData.phone}
-									onChange={handleChange}
+									onChange={handlePhoneInputChange}
 									isInvalid={!!errors.phone}
 									placeholder="+1-555-0000"
 								/>
+								<Form.Text className="text-muted">
+									Numbers, spaces, hyphens, and parentheses allowed
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.phone}
 								</Form.Control.Feedback>
@@ -527,34 +670,35 @@ const StudentFormModal = ({
 							<Form.Group className="mb-3">
 								<Form.Label>Current GPA</Form.Label>
 								<Form.Control
-									type="number"
-									step="0.01"
-									min="0"
-									max="4"
+									type="text"
 									name="gpa"
 									value={formData.gpa}
-									onChange={handleChange}
+									onChange={handleNumberInputChange}
 									isInvalid={!!errors.gpa}
 									placeholder="0.00"
 								/>
 								<Form.Control.Feedback type="invalid">
 									{errors.gpa}
 								</Form.Control.Feedback>
-								<Form.Text className="text-muted">Scale: 0.0 - 4.0</Form.Text>
+								<Form.Text className="text-muted">
+									Scale: 0.0 - 4.0 (numbers and decimals only)
+								</Form.Text>
 							</Form.Group>
 						</Col>
 						<Col md={4}>
 							<Form.Group className="mb-3">
 								<Form.Label>Total Credits</Form.Label>
 								<Form.Control
-									type="number"
-									min="0"
+									type="text"
 									name="credits"
 									value={formData.credits}
-									onChange={handleChange}
+									onChange={handleIntegerInputChange}
 									isInvalid={!!errors.credits}
 									placeholder="0"
 								/>
+								<Form.Text className="text-muted">
+									Integers only (no decimals)
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.credits}
 								</Form.Control.Feedback>
@@ -578,10 +722,13 @@ const StudentFormModal = ({
 									type="text"
 									name="guardianName"
 									value={formData.guardianName}
-									onChange={handleChange}
+									onChange={handleTextInputChange}
 									isInvalid={!!errors.guardianName}
 									placeholder="Guardian's full name"
 								/>
+								<Form.Text className="text-muted">
+									Letters only (no numbers)
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.guardianName}
 								</Form.Control.Feedback>
@@ -597,10 +744,13 @@ const StudentFormModal = ({
 									type="tel"
 									name="guardianPhone"
 									value={formData.guardianPhone}
-									onChange={handleChange}
+									onChange={handlePhoneInputChange}
 									isInvalid={!!errors.guardianPhone}
 									placeholder="+1-555-0000"
 								/>
+								<Form.Text className="text-muted">
+									Numbers, spaces, hyphens, and parentheses allowed
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.guardianPhone}
 								</Form.Control.Feedback>
