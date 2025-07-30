@@ -10,7 +10,7 @@ import {
 	InputGroup,
 	Badge,
 } from "react-bootstrap";
-import { FaSave, FaTimes, FaCalendar, FaDollarSign } from "react-icons/fa";
+import { FaSave, FaTimes, FaCalendar, FaRupeeSign } from "react-icons/fa";
 
 const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 	const [formData, setFormData] = useState({
@@ -153,6 +153,144 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 			setSaveSuccess(false);
 		}
 	}, [saveSuccess]);
+
+	// Improved input handlers with validation
+	const handleTextInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow letters, spaces, hyphens, apostrophes, and basic punctuation (NO NUMBERS)
+		const textRegex = /^[a-zA-Z\s\-'.,&()]*$/;
+
+		if (textRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error for this field when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({
+					...prev,
+					[name]: "",
+				}));
+			}
+		}
+	};
+
+	const handleProgramNameInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow letters, numbers, spaces, and common punctuation for program names
+		const programNameRegex = /^[a-zA-Z0-9\s\-'.,&()]*$/;
+
+		if (programNameRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error for this field when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({
+					...prev,
+					[name]: "",
+				}));
+			}
+		}
+	};
+
+	const handleNumberInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow positive numbers (integers and decimals)
+		const numberRegex = /^[0-9]*\.?[0-9]*$/;
+
+		// Prevent input if it's not a valid number format
+		if (value !== "" && !numberRegex.test(value)) {
+			return; // Don't update state if invalid format
+		}
+
+		// Prevent multiple decimal points
+		if (value.includes(".") && (value.match(/\./g) || []).length > 1) {
+			return;
+		}
+
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error for this field when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	const handleIntegerInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow positive integers (no decimals)
+		const integerRegex = /^[0-9]*$/;
+
+		// Prevent input if it's not a valid integer format
+		if (value !== "" && !integerRegex.test(value)) {
+			return; // Don't update state if invalid format
+		}
+
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+
+		// Clear error for this field when user starts typing
+		if (errors[name]) {
+			setErrors((prev) => ({
+				...prev,
+				[name]: "",
+			}));
+		}
+	};
+
+	const handleDurationInputChange = (e) => {
+		const { name, value } = e.target;
+		// Allow numbers, letters, and spaces for duration (e.g., "4 years", "2 semesters")
+		const durationRegex = /^[a-zA-Z0-9\s]*$/;
+
+		if (durationRegex.test(value) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+
+			// Clear error for this field when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({
+					...prev,
+					[name]: "",
+				}));
+			}
+		}
+	};
+
+	const handleCodeInputChange = (e) => {
+		const { name, value } = e.target;
+		// Only allow uppercase letters and numbers for program codes
+		const codeRegex = /^[A-Z0-9]*$/;
+
+		if (codeRegex.test(value.toUpperCase()) || value === "") {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value.toUpperCase(),
+			}));
+
+			// Clear error for this field when user starts typing
+			if (errors[name]) {
+				setErrors((prev) => ({
+					...prev,
+					[name]: "",
+				}));
+			}
+		}
+	};
 
 	const handleInputChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -320,10 +458,13 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 									type="text"
 									name="name"
 									value={formData.name}
-									onChange={handleInputChange}
+									onChange={handleProgramNameInputChange}
 									isInvalid={!!errors.name}
 									placeholder="e.g., Bachelor of Computer Science"
 								/>
+								<Form.Text className="text-muted">
+									Letters, numbers, and common punctuation allowed
+								</Form.Text>
 								<Form.Control.Feedback type="invalid">
 									{errors.name}
 								</Form.Control.Feedback>
@@ -339,11 +480,14 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 											type="text"
 											name="code"
 											value={formData.code}
-											onChange={handleInputChange}
+											onChange={handleCodeInputChange}
 											isInvalid={!!errors.code}
 											placeholder="e.g., BCS"
 											style={{ textTransform: "uppercase" }}
 										/>
+										<Form.Text className="text-muted">
+											Only uppercase letters and numbers allowed
+										</Form.Text>
 										<Form.Control.Feedback type="invalid">
 											{errors.code}
 										</Form.Control.Feedback>
@@ -383,7 +527,7 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 											type="text"
 											name="duration"
 											value={formData.duration}
-											onChange={handleInputChange}
+											onChange={handleDurationInputChange}
 											isInvalid={!!errors.duration}
 											placeholder="e.g., 4 years"
 										/>
@@ -398,15 +542,16 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 											Credits <span className="text-danger">*</span>
 										</Form.Label>
 										<Form.Control
-											type="number"
+											type="text"
 											name="credits"
 											value={formData.credits}
-											onChange={handleInputChange}
+											onChange={handleIntegerInputChange}
 											isInvalid={!!errors.credits}
 											placeholder="120"
-											min="1"
-											max="300"
 										/>
+										<Form.Text className="text-muted">
+											Integers only (no decimals)
+										</Form.Text>
 										<Form.Control.Feedback type="invalid">
 											{errors.credits}
 										</Form.Control.Feedback>
@@ -484,14 +629,16 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 											Capacity <span className="text-danger">*</span>
 										</Form.Label>
 										<Form.Control
-											type="number"
+											type="text"
 											name="capacity"
 											value={formData.capacity}
-											onChange={handleInputChange}
+											onChange={handleIntegerInputChange}
 											isInvalid={!!errors.capacity}
 											placeholder="100"
-											min="1"
 										/>
+										<Form.Text className="text-muted">
+											Integers only (no decimals)
+										</Form.Text>
 										<Form.Control.Feedback type="invalid">
 											{errors.capacity}
 										</Form.Control.Feedback>
@@ -503,22 +650,23 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 								<Form.Label>Tuition Fee (Annual)</Form.Label>
 								<InputGroup>
 									<InputGroup.Text>
-										<FaDollarSign />
+										<FaRupeeSign />
 									</InputGroup.Text>
 									<Form.Control
-										type="number"
+										type="text"
 										name="tuitionFee"
 										value={formData.tuitionFee}
-										onChange={handleInputChange}
+										onChange={handleNumberInputChange}
 										isInvalid={!!errors.tuitionFee}
 										placeholder="25000"
-										min="0"
-										step="0.01"
 									/>
 									<Form.Control.Feedback type="invalid">
 										{errors.tuitionFee}
 									</Form.Control.Feedback>
 								</InputGroup>
+								<Form.Text className="text-muted">
+									Enter amount in Indian Rupees (numbers and decimals allowed)
+								</Form.Text>
 							</Form.Group>
 
 							<Row>
@@ -681,9 +829,12 @@ const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 							type="text"
 							name="accreditation"
 							value={formData.accreditation}
-							onChange={handleInputChange}
+							onChange={handleTextInputChange}
 							placeholder="e.g., ABET Accredited"
 						/>
+						<Form.Text className="text-muted">
+							Letters and punctuation only (no numbers)
+						</Form.Text>
 					</Form.Group>
 				</Modal.Body>
 
