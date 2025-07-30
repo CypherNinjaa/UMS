@@ -19,7 +19,7 @@ const AdminLayout = ({ children }) => {
 				<main
 					className={`admin-main-content ${sidebarCollapsed ? "expanded" : ""}`}
 				>
-					<Container fluid className="p-4">
+					<Container fluid className="p-3">
 						{children}
 					</Container>
 				</main>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Modal,
 	Form,
@@ -21,7 +21,13 @@ import {
 	FaUserCheck,
 } from "react-icons/fa";
 
-const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
+const StudentFormModal = ({
+	show,
+	onHide,
+	student = null,
+	onSave,
+	onSuccess,
+}) => {
 	const isEdit = student !== null;
 
 	// Helper to get today's date in YYYY-MM-DD format
@@ -57,6 +63,7 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 
 	const [errors, setErrors] = useState({});
 	const [loading, setLoading] = useState(false);
+	const [saveSuccess, setSaveSuccess] = useState(false);
 
 	const programs = [
 		"Bachelor of Computer Science",
@@ -74,6 +81,15 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 	const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 	const semesters = ["Fall 2024", "Spring 2025", "Summer 2025", "Fall 2025"];
 	const statuses = ["Active", "On Leave", "Graduated", "Suspended", "Enrolled"];
+
+	// Add useEffect to handle successful save
+	useEffect(() => {
+		if (saveSuccess) {
+			console.log("Student saved successfully, triggering parent refresh...");
+			// Reset the success flag
+			setSaveSuccess(false);
+		}
+	}, [saveSuccess]);
 
 	const handleChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -200,6 +216,15 @@ const StudentFormModal = ({ show, onHide, student = null, onSave }) => {
 			}
 
 			onSave(studentData);
+
+			// Mark save as successful
+			setSaveSuccess(true);
+
+			// Call onSuccess callback to trigger refresh in parent component
+			if (onSuccess) {
+				await onSuccess();
+			}
+
 			handleClose();
 		} catch (error) {
 			console.error("Error saving student:", error);

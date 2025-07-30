@@ -94,10 +94,23 @@
 	transition: all 0.3s ease;
 	background-color: #f8f9fa;
 	min-height: calc(100vh - 60px);
+	width: calc(100% - 250px);
+	max-width: 100%;
+	overflow-x: hidden;
 }
 
 .admin-main-content.expanded {
 	margin-left: 70px;
+	width: calc(100% - 70px);
+}
+
+/* Fix container padding and margins */
+.admin-main-content .container-fluid {
+	padding-left: 1rem;
+	padding-right: 1rem;
+	margin: 0;
+	max-width: 100%;
+	width: 100%;
 }
 
 /* Notification Badge */
@@ -115,6 +128,7 @@
 
 	.admin-main-content {
 		margin-left: 70px;
+		width: calc(100% - 70px);
 	}
 
 	.sidebar-text {
@@ -135,6 +149,7 @@
 
 	.admin-main-content {
 		margin-left: 0;
+		width: 100%;
 	}
 }
 
@@ -154,4 +169,50 @@
 
 .admin-sidebar::-webkit-scrollbar-thumb:hover {
 	background: #2980b9;
+}
+
+/* Faculty Management specific styles to fix layout issues */
+.faculty-management,
+.student-management,
+.dashboard-overview {
+	width: 100%;
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+.faculty-management .container-fluid,
+.student-management .container-fluid,
+.dashboard-overview .container-fluid {
+	padding-left: 0;
+	padding-right: 0;
+	margin: 0;
+	width: 100%;
+	max-width: 100%;
+}
+
+.faculty-management .row,
+.student-management .row,
+.dashboard-overview .row {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.faculty-management .col,
+.faculty-management [class*="col-"],
+.student-management .col,
+.student-management [class*="col-"],
+.dashboard-overview .col,
+.dashboard-overview [class*="col-"] {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+/* Ensure cards and tables use full width */
+.faculty-management .card,
+.faculty-management .table-responsive,
+.student-management .card,
+.student-management .table-responsive,
+.dashboard-overview .card {
+	width: 100%;
+	max-width: 100%;
 }

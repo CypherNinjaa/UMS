@@ -25,7 +25,6 @@ import {
 	FaTrash,
 	FaEye,
 	FaFilter,
-	FaDownload,
 	FaNewspaper,
 	FaCalendarAlt,
 	FaUser,
@@ -251,13 +250,9 @@ const NewsEventsManagementContent = () => {
 						</p>
 					</Col>
 					<Col xs="auto">
-						<Button variant="primary" className="me-2" onClick={handleAdd}>
+						<Button variant="primary" onClick={handleAdd}>
 							<FaPlus className="me-2" />
 							Add News/Event
-						</Button>
-						<Button variant="outline-secondary">
-							<FaDownload className="me-2" />
-							Export
 						</Button>
 					</Col>
 				</Row>

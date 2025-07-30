@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import { FaSave, FaTimes, FaCalendar, FaDollarSign } from "react-icons/fa";
 
-const ProgramFormModal = ({ show, onHide, program, onSave }) => {
+const ProgramFormModal = ({ show, onHide, program, onSave, onSuccess }) => {
 	const [formData, setFormData] = useState({
 		name: "",
 		code: "",
@@ -39,6 +39,7 @@ const ProgramFormModal = ({ show, onHide, program, onSave }) => {
 
 	const [errors, setErrors] = useState({});
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [saveSuccess, setSaveSuccess] = useState(false);
 
 	// Program types
 	const programTypes = [
@@ -141,7 +142,17 @@ const ProgramFormModal = ({ show, onHide, program, onSave }) => {
 			});
 		}
 		setErrors({});
-	}, [program]);
+		setSaveSuccess(false);
+	}, [program, show]);
+
+	// Add useEffect to handle successful save
+	useEffect(() => {
+		if (saveSuccess) {
+			console.log("Program saved successfully, triggering parent refresh...");
+			// Reset the success flag
+			setSaveSuccess(false);
+		}
+	}, [saveSuccess]);
 
 	const handleInputChange = (e) => {
 		const { name, value, type, checked } = e.target;
@@ -257,6 +268,15 @@ const ProgramFormModal = ({ show, onHide, program, onSave }) => {
 			};
 
 			await onSave(submitData);
+
+			// Mark save as successful
+			setSaveSuccess(true);
+
+			// Call onSuccess callback to trigger refresh in parent component
+			if (onSuccess) {
+				await onSuccess();
+			}
+
 			onHide();
 		} catch (error) {
 			setErrors({ submit: error.message || "Failed to save program" });

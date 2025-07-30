@@ -43,11 +43,7 @@ const AdminSidebar = ({ collapsed }) => {
 			path: "/admin/news",
 			icon: FaNewspaper,
 		},
-		{
-			title: "Settings",
-			path: "/admin/settings",
-			icon: FaCog,
-		},
+		
 	];
 
 	const isActive = (path, exact = false) => {

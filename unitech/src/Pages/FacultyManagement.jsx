@@ -21,7 +21,6 @@ import {
 	FaTrash,
 	FaEye,
 	FaFilter,
-	FaDownload,
 	FaStar,
 	FaRegStar,
 	FaUsers,
@@ -357,13 +356,9 @@ const FacultyManagement = () => {
 									Delete Selected ({selectedForBulkDelete.length})
 								</Button>
 							)}
-							<Button variant="primary" className="me-2" onClick={handleAddNew}>
+							<Button variant="primary" onClick={handleAddNew}>
 								<FaPlus className="me-2" />
 								Add Faculty
-							</Button>
-							<Button variant="outline-secondary">
-								<FaDownload className="me-2" />
-								Export
 							</Button>
 						</Col>
 					</Row>
@@ -454,10 +449,6 @@ const FacultyManagement = () => {
 								</Form.Select>
 							</Col>
 							<Col md={3} className="text-end">
-								<Button variant="outline-primary" size="sm" className="me-2">
-									<FaFilter className="me-1" />
-									More Filters
-								</Button>
 								<span className="text-muted small">
 									{filteredFaculty.length} of {faculty.length} faculty
 								</span>
