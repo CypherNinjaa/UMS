@@ -24,12 +24,7 @@ const DashboardOverview = () => {
 							Welcome back! Here's what's happening at EduVerse University.
 						</p>
 					</Col>
-					<Col xs="auto">
-						<Button variant="primary" size="sm">
-							<FaEye className="me-2" />
-							View Website
-						</Button>
-					</Col>
+					
 				</Row>
 			</div>
 

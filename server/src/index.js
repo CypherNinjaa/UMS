@@ -9,11 +9,13 @@ const Faculty = require("./models/Faculty");
 const Program = require("./models/Program");
 const NewsEvent = require("./models/NewsEvent");
 const Student = require("./models/Student");
+const Contact = require("./models/Contact");
 const UserRoutes = require("./routes/UserRoutes");
 const FacultyRoutes = require("./routes/FacultyRoutes");
 const ProgramRoutes = require("./routes/ProgramRoutes");
 const NewsEventRoutes = require("./routes/NewsEventRoutes");
 const StudentRoutes = require("./routes/StudentRoutes");
+const ContactRoutes = require("./routes/ContactRoutes");
 
 app.get("/", (req, res) => {
 	res.send("Hello Unitech!");
@@ -27,6 +29,7 @@ app.use("/api/faculty", FacultyRoutes);
 app.use("/api/programs", ProgramRoutes);
 app.use("/api/news-events", NewsEventRoutes);
 app.use("/api/students", StudentRoutes);
+app.use("/api/contacts", ContactRoutes);
 
 // Start the server first, then try to connect to database
 app.listen(PORT, () => {

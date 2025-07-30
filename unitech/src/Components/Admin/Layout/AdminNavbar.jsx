@@ -39,15 +39,8 @@ const AdminNavbar = ({ toggleSidebar }) => {
 						Admin User
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
-						<Dropdown.Header>Admin User</Dropdown.Header>
-						<Dropdown.Item>
-							<FaUser className="me-2" />
-							Profile
-						</Dropdown.Item>
-						<Dropdown.Item>
-							<FaCog className="me-2" />
-							Settings
-						</Dropdown.Item>
+						
+						
 						<Dropdown.Divider />
 						<Dropdown.Item onClick={handleLogout}>
 							<FaSignOutAlt className="me-2" />

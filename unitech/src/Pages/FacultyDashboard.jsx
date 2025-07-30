@@ -120,6 +120,12 @@ const FacultyDashboard = () => {
 		// Listen for tab change events from sidebar
 		const handleTabChange = (event) => {
 			setActiveTab(event.detail);
+			// Scroll to top when tab changes
+			window.scrollTo({
+				top: 0,
+				left: 0,
+				behavior: "smooth",
+			});
 		};
 
 		window.addEventListener("changeTab", handleTabChange);

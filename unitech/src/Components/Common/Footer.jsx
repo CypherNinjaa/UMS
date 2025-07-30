@@ -83,7 +83,7 @@ const Footer = () => {
 						</Col>
 
 						{/* Quick Links */}
-						<Col lg={2} md={6} className="mb-4">
+						<Col lg={2} md={12} className="mb-4">
 							<div className="footer-section">
 								<h5 className="footer-title">Quick Links</h5>
 								<ul className="footer-links">
@@ -91,80 +91,17 @@ const Footer = () => {
 										<a href="#home">Home</a>
 									</li>
 									<li>
-										<a href="#about">About Us</a>
+										<a href="/about">About Us</a>
 									</li>
 									<li>
-										<a href="#programs">Programs</a>
-									</li>
-									<li>
-										<a href="#admissions">Admissions</a>
-									</li>
-									<li>
-										<a href="#research">Research</a>
-									</li>
-									<li>
-										<a href="#campus-life">Campus Life</a>
-									</li>
-								</ul>
-							</div>
-						</Col>
-
-						{/* Academic */}
-						<Col lg={2} md={6} className="mb-4">
-							<div className="footer-section">
-								<h5 className="footer-title">Academic</h5>
-								<ul className="footer-links">
-									<li>
-										<a href="#undergraduate">Undergraduate</a>
-									</li>
-									<li>
-										<a href="#graduate">Graduate</a>
-									</li>
-									<li>
-										<a href="#online-programs">Online Programs</a>
-									</li>
-									<li>
-										<a href="#international">International</a>
-									</li>
-									<li>
-										<a href="#library">Library</a>
-									</li>
-									<li>
-										<a href="#academic-calendar">Academic Calendar</a>
-									</li>
-								</ul>
-							</div>
-						</Col>
-
-						{/* Student Services */}
-						<Col lg={2} md={6} className="mb-4">
-							<div className="footer-section">
-								<h5 className="footer-title">Student Services</h5>
-								<ul className="footer-links">
-									<li>
-										<a href="#student-portal">Student Portal</a>
-									</li>
-									<li>
-										<a href="#financial-aid">Financial Aid</a>
-									</li>
-									<li>
-										<a href="#career-services">Career Services</a>
-									</li>
-									<li>
-										<a href="#housing">Housing</a>
-									</li>
-									<li>
-										<a href="#health-services">Health Services</a>
-									</li>
-									<li>
-										<a href="#support">Student Support</a>
+										<a href="/Programs">Programs</a>
 									</li>
 								</ul>
 							</div>
 						</Col>
 
 						{/* Contact Info */}
-						<Col lg={2} md={6} className="mb-4">
+						<Col lg={2} md={12} className="mb-4">
 							<div className="footer-section">
 								<h5 className="footer-title">Contact Us</h5>
 								<div className="contact-info">
@@ -173,13 +110,12 @@ const Footer = () => {
 										<span>
 											EduVerse University
 											<br />
-											Near Ghandhi Madan,gate no 2, 
-											Patna, Bihar, 800004
+											Near Ghandhi Madan,gate no 2, Patna, Bihar, 800004
 										</span>
 									</div>
 									<div className="contact-item">
 										<FaPhone className="contact-icon" />
-										<span>+91-8294447219</span>
+										<span>+918294447219</span>
 									</div>
 									<div className="contact-item">
 										<FaEnvelope className="contact-icon" />
