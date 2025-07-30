@@ -35,10 +35,6 @@ Active News,${statistics.activeNews}`;
 		document.body.removeChild(link);
 	};
 
-	const handleStudentRegistration = () => {
-		alert("Student registration functionality to be implemented");
-	};
-
 	const actions = [
 		{
 			title: "Add Faculty",
@@ -59,7 +55,7 @@ Active News,${statistics.activeNews}`;
 			description: "Enroll new student",
 			icon: FaUserGraduate,
 			color: "info",
-			onClick: handleStudentRegistration,
+			link: "/admin/students",
 		},
 		{
 			title: "Post News",
