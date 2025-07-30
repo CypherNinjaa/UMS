@@ -841,10 +841,6 @@ const FacultyDashboard = () => {
 				<Card.Header>
 					<div className="d-flex justify-content-between align-items-center">
 						<h6 className="mb-0">Student Performance Overview</h6>
-						<Button variant="outline-primary" size="sm">
-							<FaDownload className="me-1" />
-							Export Report
-						</Button>
 					</div>
 				</Card.Header>
 				<Card.Body className="p-0">

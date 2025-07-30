@@ -23,7 +23,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import FacultyManagement from "./Pages/FacultyManagement";
 import ProgramManagement from "./Pages/ProgramManagement";
 import StudentManagement from "./Pages/StudentManagement";
-import AdminSettings from "./Pages/AdminSettings";
+
 import NewsEventsManagement from "./Pages/NewsEventsManagement";
 
 // Faculty and Student dashboards
@@ -138,14 +138,7 @@ function App() {
 								</ProtectedRoute>
 							}
 						/>
-						<Route
-							path="/admin/settings"
-							element={
-								<ProtectedRoute allowedRoles={["admin"]}>
-									<AdminSettings />
-								</ProtectedRoute>
-							}
-						/>
+						
 						<Route
 							path="/admin/news"
 							element={

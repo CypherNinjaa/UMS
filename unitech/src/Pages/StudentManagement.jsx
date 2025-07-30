@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Row,
 	Col,
@@ -25,7 +25,6 @@ import {
 	FaTrash,
 	FaEye,
 	FaFilter,
-	FaDownload,
 	FaUser,
 	FaUsers,
 	FaGraduationCap,
@@ -62,6 +61,7 @@ const StudentManagement = () => {
 	const [selectedStudent, setSelectedStudent] = useState(null);
 	const [editingStudent, setEditingStudent] = useState(null);
 	const [activeTab, setActiveTab] = useState("personal");
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	// Get unique values for filters from students
 	const programs = [
@@ -76,6 +76,21 @@ const StudentManagement = () => {
 		"All",
 		...new Set(students.map((student) => student.status).filter(Boolean)),
 	];
+
+	// Monitor students array for changes and refresh
+	useEffect(() => {
+		console.log("Students array updated, length:", students.length);
+	}, [students]);
+
+	// Monitor refresh trigger for additional refreshes
+	useEffect(() => {
+		if (refreshTrigger > 0) {
+			console.log("Refresh trigger activated:", refreshTrigger);
+			setTimeout(() => {
+				refresh();
+			}, 100);
+		}
+	}, [refreshTrigger, refresh]);
 
 	// Apply search and filter logic manually instead of useEffect
 	const applyFilters = React.useCallback(
@@ -176,6 +191,29 @@ const StudentManagement = () => {
 		}
 	};
 
+	// Handle student success with multiple refresh strategies
+	const handleStudentSuccess = async () => {
+		console.log("Student saved successfully, refreshing student list...");
+
+		try {
+			// Strategy 1: Direct refresh
+			await refresh();
+			console.log("Direct refresh completed");
+
+			// Strategy 2: Trigger refresh via state
+			setRefreshTrigger((prev) => prev + 1);
+			console.log("Refresh trigger updated");
+
+			// Strategy 3: Delayed refresh for better reliability
+			setTimeout(async () => {
+				console.log("Executing delayed refresh...");
+				await refresh();
+			}, 500);
+		} catch (error) {
+			console.error("Error refreshing students:", error);
+		}
+	};
+
 	const getStatusBadge = (status) => {
 		const variants = {
 			Active: "success",
@@ -234,13 +272,9 @@ const StudentManagement = () => {
 							</p>
 						</Col>
 						<Col xs="auto">
-							<Button variant="primary" className="me-2" onClick={handleAddNew}>
+							<Button variant="primary" onClick={handleAddNew}>
 								<FaPlus className="me-2" />
 								Add Student
-							</Button>
-							<Button variant="outline-secondary">
-								<FaDownload className="me-2" />
-								Export
 							</Button>
 						</Col>
 					</Row>
@@ -359,12 +393,8 @@ const StudentManagement = () => {
 								</Form.Select>
 							</Col>
 							<Col md={2} className="text-end">
-								<Button variant="outline-primary" size="sm" className="me-2">
-									<FaFilter className="me-1" />
-									More Filters
-								</Button>
 								<div className="text-muted small">
-									{filteredStudents.length} of {students.length} students
+									{students.length} of {pagination.totalItems || 0} students
 								</div>
 							</Col>
 						</Row>
@@ -516,25 +546,28 @@ const StudentManagement = () => {
 				</Card>
 
 				{/* Pagination */}
-				{!loading && filteredStudents.length > 0 && (
+				{!loading && filteredStudents.length > 0 && pagination && (
 					<div className="d-flex justify-content-between align-items-center mt-3">
 						<div className="text-muted">
-							Showing {(pagination.currentPage - 1) * pagination.pageSize + 1}{" "}
+							Showing{" "}
+							{((pagination.currentPage || 1) - 1) *
+								(pagination.itemsPerPage || 10) +
+								1}{" "}
 							to{" "}
 							{Math.min(
-								pagination.currentPage * pagination.pageSize,
-								pagination.totalRecords
+								(pagination.currentPage || 1) * (pagination.itemsPerPage || 10),
+								pagination.totalItems || 0
 							)}{" "}
-							of {pagination.totalRecords} students
+							of {pagination.totalItems || 0} students
 						</div>
 						<div className="d-flex align-items-center">
 							<span className="me-2 text-muted">Per page:</span>
 							<Form.Select
 								size="sm"
 								style={{ width: "auto" }}
-								value={pagination.pageSize}
+								value={pagination.itemsPerPage || 10}
 								onChange={(e) =>
-									updateFilters({ pageSize: parseInt(e.target.value), page: 1 })
+									updateFilters({ limit: parseInt(e.target.value), page: 1 })
 								}
 							>
 								<option value={10}>10</option>
@@ -544,42 +577,47 @@ const StudentManagement = () => {
 							</Form.Select>
 							<Pagination className="ms-3 mb-0">
 								<Pagination.Prev
-									disabled={pagination.currentPage <= 1}
+									disabled={(pagination.currentPage || 1) <= 1}
 									onClick={() =>
-										pagination.currentPage > 1 &&
-										updateFilters({ page: pagination.currentPage - 1 })
+										(pagination.currentPage || 1) > 1 &&
+										updateFilters({ page: (pagination.currentPage || 1) - 1 })
 									}
 								/>
-								{[...Array(pagination.totalPages)].map((_, index) => {
+								{[...Array(pagination.totalPages || 1)].map((_, index) => {
 									const page = index + 1;
+									const currentPage = pagination.currentPage || 1;
+									const totalPages = pagination.totalPages || 1;
 									if (
 										page === 1 ||
-										page === pagination.totalPages ||
-										(page >= pagination.currentPage - 2 &&
-											page <= pagination.currentPage + 2)
+										page === totalPages ||
+										(page >= currentPage - 2 && page <= currentPage + 2)
 									) {
 										return (
 											<Pagination.Item
 												key={page}
-												active={page === pagination.currentPage}
+												active={page === currentPage}
 												onClick={() => updateFilters({ page })}
 											>
 												{page}
 											</Pagination.Item>
 										);
 									} else if (
-										page === pagination.currentPage - 3 ||
-										page === pagination.currentPage + 3
+										page === currentPage - 3 ||
+										page === currentPage + 3
 									) {
 										return <Pagination.Ellipsis key={page} />;
 									}
 									return null;
 								})}
 								<Pagination.Next
-									disabled={pagination.currentPage >= pagination.totalPages}
+									disabled={
+										(pagination.currentPage || 1) >=
+										(pagination.totalPages || 1)
+									}
 									onClick={() =>
-										pagination.currentPage < pagination.totalPages &&
-										updateFilters({ page: pagination.currentPage + 1 })
+										(pagination.currentPage || 1) <
+											(pagination.totalPages || 1) &&
+										updateFilters({ page: (pagination.currentPage || 1) + 1 })
 									}
 								/>
 							</Pagination>
@@ -792,6 +830,7 @@ const StudentManagement = () => {
 					onHide={() => setShowFormModal(false)}
 					student={editingStudent}
 					onSave={handleSaveStudent}
+					onSuccess={handleStudentSuccess}
 				/>
 			</div>
 		</AdminLayout>

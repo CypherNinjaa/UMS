@@ -23,7 +23,6 @@ import {
 	FaTrash,
 	FaEye,
 	FaFilter,
-	FaDownload,
 	FaGraduationCap,
 	FaClock,
 	FaUsers,
@@ -76,6 +75,7 @@ const ProgramManagement = () => {
 	const [localDepartment, setLocalDepartment] = useState(filters.department);
 	const [localStatus, setLocalStatus] = useState(filters.status);
 	const [activeTab, setActiveTab] = useState("overview");
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 
 	// Program types for filtering
 	const programTypes = [
@@ -161,6 +161,21 @@ const ProgramManagement = () => {
 			console.log("Programs data structure:", programs[0]);
 		}
 	}, [programs]);
+
+	// Monitor programs array for changes and refresh
+	useEffect(() => {
+		console.log("Programs array updated, length:", programs.length);
+	}, [programs]);
+
+	// Monitor refresh trigger for additional refreshes
+	useEffect(() => {
+		if (refreshTrigger > 0) {
+			console.log("Refresh trigger activated:", refreshTrigger);
+			setTimeout(() => {
+				fetchPrograms();
+			}, 100);
+		}
+	}, [refreshTrigger, fetchPrograms]);
 
 	// Unused legacy handlers - kept for compatibility
 	// const handleDelete = (program) => {
@@ -273,6 +288,29 @@ const ProgramManagement = () => {
 		fetchPrograms();
 	};
 
+	// Handle program success with multiple refresh strategies
+	const handleProgramSuccess = async () => {
+		console.log("Program saved successfully, refreshing program list...");
+
+		try {
+			// Strategy 1: Direct refresh
+			await fetchPrograms();
+			console.log("Direct refresh completed");
+
+			// Strategy 2: Trigger refresh via state
+			setRefreshTrigger((prev) => prev + 1);
+			console.log("Refresh trigger updated");
+
+			// Strategy 3: Delayed refresh for better reliability
+			setTimeout(async () => {
+				console.log("Executing delayed refresh...");
+				await fetchPrograms();
+			}, 500);
+		} catch (error) {
+			console.error("Error refreshing programs:", error);
+		}
+	};
+
 	// const handleToggleFeatured = async (program) => {
 	// 	try {
 	// 		await toggleFeatured(program.id);
@@ -352,13 +390,9 @@ const ProgramManagement = () => {
 									Delete Selected ({selectedProgramIds.length})
 								</Button>
 							)}
-							<Button variant="primary" className="me-2" onClick={handleAddNew}>
+							<Button variant="primary" onClick={handleAddNew}>
 								<FaPlus className="me-2" />
 								Add Program
-							</Button>
-							<Button variant="outline-secondary">
-								<FaDownload className="me-2" />
-								Export
 							</Button>
 						</Col>
 					</Row>
@@ -476,10 +510,6 @@ const ProgramManagement = () => {
 								</Form.Select>
 							</Col>
 							<Col md={2} className="text-end">
-								<Button variant="outline-primary" size="sm" className="me-2">
-									<FaFilter className="me-1" />
-									More Filters
-								</Button>
 								<div className="text-muted small">
 									{filteredPrograms.length} of {programs.length} programs
 								</div>
@@ -940,6 +970,7 @@ const ProgramManagement = () => {
 							console.error("Error saving program:", error);
 						}
 					}}
+					onSuccess={handleProgramSuccess}
 				/>
 
 				{/* Program View Modal */}
