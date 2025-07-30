@@ -49,26 +49,26 @@ const About = () => {
 	const leadership = [
 		{
 			id: 1,
-			name: "Dr. Margaret Williams",
+			name: "Dr. Nihal Kapoor",
 			title: "President",
 			image:
-				"https://images.unsplash.com/photo-1494790108755-2616b612b977?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+				"https://imgs.search.brave.com/MvRGNF9qCMVIpN_N9_29TqA6T2Pq7BSt2TLlGDpRB6o/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTIw/NTI4MDEwMi9waG90/by9tYW4taW4tZnJv/bnQtb2YtYmxhY2ti/b2FyZC1hdC1zY2hv/b2wuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPUVVcVp2ZUlv/YTVNNGZkdFBQaXA0/aVN5R1h1YXBxckpF/S3UtY18tWVJQcmM9",
 			bio: "Leading EduVerse University with 20+ years of academic leadership experience.",
 		},
 		{
 			id: 2,
-			name: "Dr. James Patterson",
+			name: "Dr. Sahil Khurana",
 			title: "Vice President Academic Affairs",
 			image:
-				"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+				"https://imgs.search.brave.com/PPjdypRcmw3m5l0TtpKZLGyH_ap3yEv7DcOxYcjfCCw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/ZnJlZS1waG90by9w/b3J0cmFpdC10ZWFj/aGVyLXdvcmstZWR1/Y2F0aW9uYWwtc3lz/dGVtXzIzLTIxNTE3/MzczNDEuanBnP3Nl/bXQ9YWlzX2h5YnJp/ZCZ3PTc0MA",
 			bio: "Overseeing academic excellence and curriculum development across all departments.",
 		},
 		{
 			id: 3,
-			name: "Dr. Sandra Kumar",
+			name: "Dr. Sandip Singh",
 			title: "Vice President Research",
 			image:
-				"https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80",
+				"https://imgs.search.brave.com/WMPFkOQg-tsoAWYn9roMUN3KTgpHnWYksLZWnh3w0ic/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA2LzAzLzMwLzYx/LzM2MF9GXzYwMzMw/NjE5M182bDNzN1JL/aHdxNlZidlJjYjRr/SjUxUTFwRHFocEFO/TC5qcGc",
 			bio: "Leading groundbreaking research initiatives and fostering innovation.",
 		},
 	];
@@ -97,7 +97,7 @@ const About = () => {
 			description:
 				"Hub for student activities, dining, recreation, and community engagement",
 			image:
-				"https://images.unsplash.com/photo-1523050854058-8df90110c9d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+				"https://imgs.search.brave.com/1-yINg06LaegjNzwggby3T72USA-KCBQmfLza1whFYk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTIx/ODkzMTU3NC9waG90/by9oYXBweS1zdHVk/ZW50cy10YWxraW5n/LXdoaWxlLWhhdmlu/Zy1sdW5jaC1icmVh/ay1hdC1jYWZldGVy/aWEuanBnP3M9NjEy/eDYxMiZ3PTAmaz0y/MCZjPURvbDhPcldt/VFVsOUpOOFh3OWpr/M2JIV1VDTkVmM0tt/WktMUjY3bEZDcTQ9",
 		},
 	];
 
@@ -158,10 +158,7 @@ const About = () => {
 									/>
 									<h4 className="mission-title">Our Mission</h4>
 									<p className="mission-text">
-										To provide transformative education that empowers students
-										to become global leaders, critical thinkers, and responsible
-										citizens who contribute positively to society and advance
-										human knowledge.
+										To empower individuals and organizations through accessible, high-quality digital solutions that foster learning, innovation, and meaningful growth. We are committed to creating impactful experiences that inspire progress and drive positive change in a connected world.
 									</p>
 								</Card.Body>
 							</Card>
@@ -172,10 +169,7 @@ const About = () => {
 									<FaEye className="vision-icon text-success mb-3" size={50} />
 									<h4 className="vision-title">Our Vision</h4>
 									<p className="vision-text">
-										To be a globally recognized university that leads in
-										educational innovation, groundbreaking research, and social
-										impact, creating a better world through knowledge and
-										discovery.
+										To be a trusted global leader in digital transformation and learning, shaping the future by enabling lifelong development, innovation, and inclusion through technology and human-centered design.
 									</p>
 								</Card.Body>
 							</Card>
@@ -189,11 +183,12 @@ const About = () => {
 									/>
 									<h4 className="values-title">Our Values</h4>
 									<ul className="values-list text-start">
-										<li>Excellence in education and research</li>
-										<li>Diversity and inclusion</li>
-										<li>Innovation and creativity</li>
-										<li>Integrity and ethical conduct</li>
-										<li>Global citizenship</li>
+										<li>Excellence — We pursue the highest standards in everything we do.</li>
+										<li> Innovation — We embrace creativity and continuously explore new ideas.</li>
+										<li> Integrity — We act with transparency, honesty, and accountability.</li>
+										<li>Collaboration — We believe in the power of teamwork and diverse perspectives.</li>
+										<li>Inclusion — We create spaces where everyone belongs and thrives.</li>
+										<li>Impact — We focus on outcomes that matter to people and society.</li>
 									</ul>
 								</Card.Body>
 							</Card>

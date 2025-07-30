@@ -171,18 +171,19 @@ const Footer = () => {
 									<div className="contact-item">
 										<FaMapMarkerAlt className="contact-icon" />
 										<span>
-											123 University Ave
+											EduVerse University
 											<br />
-											Education City, ED 12345
+											Near Ghandhi Madan,gate no 2, 
+											Patna, Bihar, 800004
 										</span>
 									</div>
 									<div className="contact-item">
 										<FaPhone className="contact-icon" />
-										<span>+1 (555) 123-4567</span>
+										<span>+91-8294447219</span>
 									</div>
 									<div className="contact-item">
 										<FaEnvelope className="contact-icon" />
-										<span>info@eduverse.edu</span>
+										<span>hariom.21242@gmail.com</span>
 									</div>
 								</div>
 							</div>
