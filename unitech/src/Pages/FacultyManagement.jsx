@@ -37,7 +37,6 @@ const FacultyManagement = () => {
 	// Use Faculty Context for dynamic data
 	const {
 		faculty,
-		statistics,
 		departments,
 		loading,
 		error,
@@ -55,7 +54,6 @@ const FacultyManagement = () => {
 		bulkDeleteFaculty,
 		toggleFeatured,
 		fetchFaculty,
-		fetchStatistics,
 		fetchDepartments,
 		clearError,
 	} = actions;
@@ -84,6 +82,17 @@ const FacultyManagement = () => {
 		return matchesSearch && matchesDepartment;
 	});
 
+	// Calculate dynamic statistics from actual faculty data
+	const dynamicStatistics = {
+		totalFaculty: faculty.length,
+		activeFaculty: faculty.filter((member) => member.status === "Active")
+			.length,
+		featuredFaculty: faculty.filter((member) => member.featured === true)
+			.length,
+		pendingFaculty: faculty.filter((member) => member.status === "Pending")
+			.length,
+	};
+
 	// Load data on component mount
 	useEffect(() => {
 		fetchFaculty({
@@ -92,9 +101,8 @@ const FacultyManagement = () => {
 			page: 1,
 			limit: 100, // Fetch more data at once to reduce API calls
 		});
-		fetchStatistics();
 		fetchDepartments();
-	}, [fetchFaculty, fetchStatistics, fetchDepartments]); // Include dependencies
+	}, [fetchFaculty, fetchDepartments]); // Include dependencies
 
 	// Use client-side filtering for better performance
 	// Only make API calls for complex searches or when needed
@@ -237,7 +245,7 @@ const FacultyManagement = () => {
 						<Card className="stats-card">
 							<Card.Body className="text-center">
 								<FaUsers className="stats-icon text-primary mb-2" size={24} />
-								<h3 className="mb-0">{statistics.totalFaculty || 0}</h3>
+								<h3 className="mb-0">{dynamicStatistics.totalFaculty}</h3>
 								<p className="text-muted mb-0">Total Faculty</p>
 							</Card.Body>
 						</Card>
@@ -249,7 +257,7 @@ const FacultyManagement = () => {
 									className="stats-icon text-success mb-2"
 									size={24}
 								/>
-								<h3 className="mb-0">{statistics.activeFaculty || 0}</h3>
+								<h3 className="mb-0">{dynamicStatistics.activeFaculty}</h3>
 								<p className="text-muted mb-0">Active Faculty</p>
 							</Card.Body>
 						</Card>
@@ -258,7 +266,7 @@ const FacultyManagement = () => {
 						<Card className="stats-card">
 							<Card.Body className="text-center">
 								<FaStar className="stats-icon text-warning mb-2" size={24} />
-								<h3 className="mb-0">{statistics.featuredFaculty || 0}</h3>
+								<h3 className="mb-0">{dynamicStatistics.featuredFaculty}</h3>
 								<p className="text-muted mb-0">Distinguished</p>
 							</Card.Body>
 						</Card>
@@ -267,7 +275,7 @@ const FacultyManagement = () => {
 						<Card className="stats-card">
 							<Card.Body className="text-center">
 								<FaUserClock className="stats-icon text-info mb-2" size={24} />
-								<h3 className="mb-0">{statistics.pendingFaculty || 0}</h3>
+								<h3 className="mb-0">{dynamicStatistics.pendingFaculty}</h3>
 								<p className="text-muted mb-0">Pending</p>
 							</Card.Body>
 						</Card>
