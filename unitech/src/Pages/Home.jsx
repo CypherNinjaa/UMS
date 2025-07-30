@@ -14,7 +14,6 @@ const Home = () => {
 			<NewsHighlights />
 			<StudentSuccessStories />
 			<WhyChooseUs />
-			
 		</div>
 	);
 };
