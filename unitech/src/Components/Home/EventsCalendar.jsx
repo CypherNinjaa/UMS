@@ -7,6 +7,8 @@ import {
 	Card,
 	Badge,
 	Carousel,
+	Spinner,
+	Alert,
 } from "react-bootstrap";
 import {
 	FaCalendarAlt,
@@ -17,22 +19,13 @@ import {
 	FaChevronLeft,
 	FaChevronRight,
 } from "react-icons/fa";
+import usePublicEvents from "../../hooks/usePublicEvents";
 import "./EventsCalendar.css";
 
-// sample event data
+// Dynamic events from database
 const EventsCalendar = () => {
-	const [events] = useState([
-		{
-			id: 1,
-			title: "Orientation Day 2025",
-			date: "2025-08-15",
-			time: "09:00 AM",
-			location: "Main Auditorium",
-			category: "Academic",
-			attendees: 500,
-			description: "Welcome new students and introduce them to university life",
-		},
-	]);
+	const { events, loading, error } = usePublicEvents();
+
 	const [galleryImages] = useState([
 		{
 			id: 1,
@@ -51,7 +44,7 @@ const EventsCalendar = () => {
 				"Modern facilities equipped with latest technology and resources",
 		},
 	]);
-	// get category colour
+
 	// Get category color for badges
 	const getCategoryColor = (category) => {
 		const colors = {
@@ -59,8 +52,26 @@ const EventsCalendar = () => {
 			Research: "success",
 			Career: "warning",
 			Cultural: "info",
+			Technology: "primary",
+			Sports: "danger",
+			Alumni: "dark",
+			"Campus Life": "info",
+			"Community Service": "success",
 		};
 		return colors[category] || "secondary";
+	};
+
+	const formatDate = (dateString) => {
+		return new Date(dateString).toLocaleDateString("en-US", {
+			weekday: "long",
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+		});
+	};
+
+	const handleRegister = (event) => {
+		alert(`Registration for ${event.title} - Coming Soon!`);
 	};
 	return (
 		<Container>
@@ -77,69 +88,87 @@ const EventsCalendar = () => {
 				</Col>
 			</Row>
 			<Row>
-				{/* event list goes here  from left side*/}
+				{/* Dynamic events list from database */}
 				<Col lg={6} className="mb-4">
-					{/* events.map() – Loops through all events in the state and creates a Card for each. */}
-					{events.map((event) => (
-						<Card key={event.id} className="event-card mb-3">
-							<Card.Body>
-								<Row>
-									<Col md={8}>
-										{/* events heading */}
-										<div className="d-flex align-items-center mb-2">
-											<h4 className="event-title mb-0 me-3">{event.title}</h4>
-											<Badge bg={getCategoryColor(event.category)}>
-												{event.category}
-											</Badge>
-										</div>
-										{/* Event Description */}
-										<p className="event-description text-muted mb-3">
-											{event.description}
-										</p>
-										<div className="event-details">
-											<div className="detail-item">
-												<FaCalendarAlt className="detail-icon" />
-												<span>
-													{new Date(event.date).toLocaleDateString("en-US", {
-														weekday: "long",
-														year: "numeric",
-														month: "long",
-														day: "numeric",
-													})}
-												</span>
+					{error ? (
+						<Alert variant="danger">
+							<h5>Unable to Load Events</h5>
+							<p>{error}</p>
+						</Alert>
+					) : loading ? (
+						<div className="text-center py-5">
+							<Spinner animation="border" role="status">
+								<span className="visually-hidden">Loading...</span>
+							</Spinner>
+							<p className="mt-2 text-muted">Loading upcoming events...</p>
+						</div>
+					) : events.length > 0 ? (
+						events.map((event) => (
+							<Card key={event.id} className="event-card mb-3">
+								<Card.Body>
+									<Row>
+										<Col md={8}>
+											{/* Event heading */}
+											<div className="d-flex align-items-center mb-2">
+												<h4 className="event-title mb-0 me-3">{event.title}</h4>
+												<Badge bg={getCategoryColor(event.category)}>
+													{event.category}
+												</Badge>
 											</div>
-											<div className="detail-item">
-												<FaClock className="detail-icon" />
-												<span>{event.time}</span>
+											{/* Event Description */}
+											<p className="event-description text-muted mb-3">
+												{event.description}
+											</p>
+											<div className="event-details">
+												<div className="detail-item">
+													<FaCalendarAlt className="detail-icon" />
+													<span>{formatDate(event.eventDate)}</span>
+												</div>
+												{event.eventTime && (
+													<div className="detail-item">
+														<FaClock className="detail-icon" />
+														<span>{event.eventTime}</span>
+													</div>
+												)}
+												{event.location && (
+													<div className="detail-item">
+														<FaMapMarkerAlt className="detail-icon" />
+														<span>{event.location}</span>
+													</div>
+												)}
+												{event.registrations > 0 && (
+													<div className="detail-item">
+														<FaUsers className="detail-icon" />
+														<span>{event.registrations} Registered</span>
+													</div>
+												)}
 											</div>
-											<div className="detail-item">
-												<FaMapMarkerAlt className="detail-icon" />
-												<span>{event.location}</span>
-											</div>
-											<div className="detail-item">
-												<FaUsers className="detail-icon" />
-												<span>{event.attendees} Expected Attendees</span>
-											</div>
-										</div>
-									</Col>
-									<Col
-										md={4}
-										className="d-flex align-items-center justify-content-end"
-									>
-										<Button
-											variant="primary"
-											className="register-btn"
-											onClick={() =>
-												alert(`Registration for ${event.title} - Coming Soon!`)
-											}
+										</Col>
+										<Col
+											md={4}
+											className="d-flex align-items-center justify-content-end"
 										>
-											Register Now
-										</Button>
-									</Col>
-								</Row>
-							</Card.Body>
-						</Card>
-					))}
+											<Button
+												variant="primary"
+												className="register-btn"
+												onClick={() => handleRegister(event)}
+											>
+												Register Now
+											</Button>
+										</Col>
+									</Row>
+								</Card.Body>
+							</Card>
+						))
+					) : (
+						<div className="text-center py-5">
+							<h5>No Upcoming Events</h5>
+							<p className="text-muted">
+								There are no upcoming events scheduled at the moment. Check back
+								later for new events!
+							</p>
+						</div>
+					)}
 				</Col>
 				{/* Gallery Carousel - Right Side */}
 				<Col lg={6}>

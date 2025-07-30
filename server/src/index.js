@@ -7,9 +7,11 @@ const PORT = process.env.PORT;
 const Users = require("./models/Users");
 const Faculty = require("./models/Faculty");
 const Program = require("./models/Program");
+const NewsEvent = require("./models/NewsEvent");
 const UserRoutes = require("./routes/UserRoutes");
 const FacultyRoutes = require("./routes/FacultyRoutes");
 const ProgramRoutes = require("./routes/ProgramRoutes");
+const NewsEventRoutes = require("./routes/NewsEventRoutes");
 
 app.get("/", (req, res) => {
 	res.send("Hello Unitech!");
@@ -21,6 +23,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use("/api/users", UserRoutes);
 app.use("/api/faculty", FacultyRoutes);
 app.use("/api/programs", ProgramRoutes);
+app.use("/api/news-events", NewsEventRoutes);
 
 // Start the server first, then try to connect to database
 app.listen(PORT, () => {
