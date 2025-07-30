@@ -18,6 +18,11 @@ import {
 	FaCalendarAlt,
 	FaImage,
 	FaTimes,
+	FaKey,
+	FaEye,
+	FaEyeSlash,
+	FaRandom,
+	FaUserPlus,
 } from "react-icons/fa";
 
 const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
@@ -34,6 +39,12 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 		joinDate: "",
 		featured: false,
 		profileImage: "",
+		// Login credentials
+		createLogin: !isEdit, // Auto-check for new faculty
+		loginEmail: "",
+		password: "",
+		confirmPassword: "",
+		generatePassword: false,
 	});
 
 	const [errors, setErrors] = useState({});
@@ -41,6 +52,8 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 	const [imageLoading, setImageLoading] = useState(false);
 	const [imagePreview, setImagePreview] = useState(null);
 	const [selectedFile, setSelectedFile] = useState(null);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	// Update form data when faculty prop changes
 	useEffect(() => {
@@ -63,6 +76,12 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 				joinDate: formatDate(faculty.joinDate),
 				featured: faculty.featured || false,
 				profileImage: faculty.profileImage || "",
+				// Login credentials - don't populate for existing faculty
+				createLogin: false, // Don't auto-create for existing faculty
+				loginEmail: faculty.email || "", // Pre-fill with faculty email
+				password: "",
+				confirmPassword: "",
+				generatePassword: false,
 			});
 
 			// Set image preview if there's an existing image
@@ -81,6 +100,12 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 				joinDate: "",
 				featured: false,
 				profileImage: "",
+				// Login credentials
+				createLogin: true, // Auto-check for new faculty
+				loginEmail: "",
+				password: "",
+				confirmPassword: "",
+				generatePassword: false,
 			});
 			setImagePreview(null);
 			setSelectedFile(null);
@@ -111,10 +136,32 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 			[name]: type === "checkbox" ? checked : value,
 		}));
 
+		// Auto-sync loginEmail with email if they match
+		if (name === "email" && formData.loginEmail === formData.email) {
+			setFormData((prev) => ({
+				...prev,
+				loginEmail: value,
+			}));
+		}
+
 		// Clear error when user starts typing
 		if (errors[name]) {
 			setErrors((prev) => ({ ...prev, [name]: "" }));
 		}
+	};
+
+	const generateRandomPassword = () => {
+		const chars =
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&";
+		let password = "";
+		for (let i = 0; i < 10; i++) {
+			password += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		setFormData((prev) => ({
+			...prev,
+			password: password,
+			confirmPassword: password,
+		}));
 	};
 
 	const handleImageChange = (e) => {
@@ -245,6 +292,27 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 			newErrors.joinDate = "Join date is required";
 		}
 
+		// Login credentials validation
+		if (formData.createLogin) {
+			if (!formData.loginEmail.trim()) {
+				newErrors.loginEmail = "Login email is required";
+			} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginEmail)) {
+				newErrors.loginEmail = "Please enter a valid login email address";
+			}
+
+			if (!formData.password.trim()) {
+				newErrors.password = "Password is required";
+			} else if (formData.password.length < 6) {
+				newErrors.password = "Password must be at least 6 characters long";
+			}
+
+			if (!formData.confirmPassword.trim()) {
+				newErrors.confirmPassword = "Please confirm the password";
+			} else if (formData.password !== formData.confirmPassword) {
+				newErrors.confirmPassword = "Passwords do not match";
+			}
+		}
+
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
@@ -288,6 +356,12 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 			joinDate: "",
 			featured: false,
 			profileImage: "",
+			// Login credentials
+			createLogin: true,
+			loginEmail: "",
+			password: "",
+			confirmPassword: "",
+			generatePassword: false,
 		});
 		setErrors({});
 		setImagePreview(null);
@@ -569,6 +643,155 @@ const FacultyFormModal = ({ show, onHide, faculty = null, onSave }) => {
 							</Form.Group>
 						</Col>
 					</Row>
+
+					{/* Login Credentials Section */}
+					<hr className="my-4" />
+					<Row>
+						<Col md={12}>
+							<h5 className="mb-3">
+								<FaUserPlus className="me-2 text-primary" />
+								Login Credentials
+							</h5>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col md={12}>
+							<Form.Group className="mb-3">
+								<Form.Check
+									type="checkbox"
+									name="createLogin"
+									checked={formData.createLogin}
+									onChange={handleChange}
+									label={
+										<span>
+											<FaKey className="me-2" />
+											{isEdit
+												? "Create/Update Login Account for Faculty"
+												: "Create Login Account for Faculty"}
+										</span>
+									}
+								/>
+								<Form.Text className="text-muted">
+									{isEdit
+										? "Enable to create or update login credentials for this faculty member"
+										: "Faculty will be able to login to the Faculty Dashboard"}
+								</Form.Text>
+							</Form.Group>
+						</Col>
+					</Row>
+
+					{formData.createLogin && (
+						<>
+							<Row>
+								<Col md={6}>
+									<Form.Group className="mb-3">
+										<Form.Label>
+											<FaEnvelope className="me-2" />
+											Login Email *
+										</Form.Label>
+										<Form.Control
+											type="email"
+											name="loginEmail"
+											value={formData.loginEmail}
+											onChange={handleChange}
+											placeholder="Enter login email"
+											isInvalid={!!errors.loginEmail}
+										/>
+										<Form.Control.Feedback type="invalid">
+											{errors.loginEmail}
+										</Form.Control.Feedback>
+										<Form.Text className="text-muted">
+											Faculty will use this email to login
+										</Form.Text>
+									</Form.Group>
+								</Col>
+								<Col md={6}>
+									<Form.Group className="mb-3">
+										<Form.Label className="d-flex justify-content-between align-items-center">
+											<span>
+												<FaKey className="me-2" />
+												Password *
+											</span>
+											<Button
+												variant="outline-primary"
+												size="sm"
+												type="button"
+												onClick={generateRandomPassword}
+											>
+												<FaRandom className="me-1" />
+												Generate
+											</Button>
+										</Form.Label>
+										<InputGroup>
+											<Form.Control
+												type={showPassword ? "text" : "password"}
+												name="password"
+												value={formData.password}
+												onChange={handleChange}
+												placeholder="Enter password"
+												isInvalid={!!errors.password}
+											/>
+											<Button
+												variant="outline-secondary"
+												type="button"
+												onClick={() => setShowPassword(!showPassword)}
+											>
+												{showPassword ? <FaEyeSlash /> : <FaEye />}
+											</Button>
+										</InputGroup>
+										<Form.Control.Feedback type="invalid">
+											{errors.password}
+										</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+							</Row>
+
+							<Row>
+								<Col md={6}>
+									<Form.Group className="mb-3">
+										<Form.Label>
+											<FaKey className="me-2" />
+											Confirm Password *
+										</Form.Label>
+										<InputGroup>
+											<Form.Control
+												type={showConfirmPassword ? "text" : "password"}
+												name="confirmPassword"
+												value={formData.confirmPassword}
+												onChange={handleChange}
+												placeholder="Confirm password"
+												isInvalid={!!errors.confirmPassword}
+											/>
+											<Button
+												variant="outline-secondary"
+												type="button"
+												onClick={() =>
+													setShowConfirmPassword(!showConfirmPassword)
+												}
+											>
+												{showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+											</Button>
+										</InputGroup>
+										<Form.Control.Feedback type="invalid">
+											{errors.confirmPassword}
+										</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+								<Col md={6}>
+									<div className="mt-4 pt-2">
+										<div className="alert alert-info">
+											<small>
+												<strong>Note:</strong> Faculty will receive login
+												credentials and can access the Faculty Dashboard with
+												these credentials.
+											</small>
+										</div>
+									</div>
+								</Col>
+							</Row>
+						</>
+					)}
 
 					{Object.keys(errors).length > 0 && (
 						<Alert variant="danger">

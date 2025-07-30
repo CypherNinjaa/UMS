@@ -31,6 +31,24 @@ const Users = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		faculty_id: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			references: {
+				model: "faculty",
+				key: "id",
+			},
+			comment: "Links to faculty table for faculty users",
+		},
+		student_id: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			references: {
+				model: "students",
+				key: "id",
+			},
+			comment: "Links to students table for student users",
+		},
 	},
 	{
 		timestamps: true,
