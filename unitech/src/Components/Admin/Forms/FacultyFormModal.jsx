@@ -240,43 +240,67 @@ const FacultyFormModal = ({
 	};
 
 	const validateForm = () => {
-		const newErrors = {};
+	const newErrors = {};
 
-		if (!formData.name.trim()) {
-			newErrors.name = "Full name is required";
+	if (!formData.name.trim()) {
+		newErrors.name = "Full name is required";
+	} else if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+		newErrors.name = "Name can contain only letters and spaces";
+	}
+
+	if (!formData.title.trim()) {
+		newErrors.title = "Title is required";
+	}
+
+	if (!formData.department) {
+		newErrors.department = "Department is required";
+	}
+
+	if (!formData.email.trim()) {
+		newErrors.email = "Email is required";
+	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+		newErrors.email = "Please enter a valid email address";
+	}
+
+	if (!formData.phone.trim()) {
+		newErrors.phone = "Phone number is required";
+	} else if (!/^\d{10}$/.test(formData.phone)) {
+		newErrors.phone = "Phone number must be 10 digits";
+	}
+
+	if (!formData.joinDate) {
+		newErrors.joinDate = "Join date is required";
+	}
+
+	if (formData.createLogin) {
+		if (!formData.loginEmail.trim()) {
+			newErrors.loginEmail = "Login email is required";
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.loginEmail)) {
+			newErrors.loginEmail = "Please enter a valid login email address";
 		}
 
-		if (!formData.title.trim()) {
-			newErrors.title = "Title is required";
+		if (!formData.password.trim()) {
+			newErrors.password = "Password is required";
+		} else if (
+			formData.password.length < 6 ||
+			!/[a-zA-Z]/.test(formData.password) ||
+			!/\d/.test(formData.password)
+		) {
+			newErrors.password =
+				"Password must be at least 6 characters and contain letters and numbers";
 		}
 
-		if (!formData.department) {
-			newErrors.department = "Department is required";
+		if (!formData.confirmPassword.trim()) {
+			newErrors.confirmPassword = "Please confirm the password";
+		} else if (formData.password !== formData.confirmPassword) {
+			newErrors.confirmPassword = "Passwords do not match";
 		}
+	}
 
-		if (!formData.email.trim()) {
-			newErrors.email = "Email is required";
-		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-			newErrors.email = "Please enter a valid email address";
-		}
+	setErrors(newErrors);
+	return Object.keys(newErrors).length === 0;
+};
 
-		if (!formData.phone.trim()) {
-			newErrors.phone = "Phone number is required";
-		}
-
-		if (!formData.joinDate) {
-			newErrors.joinDate = "Join date is required";
-		}
-
-		// Login credentials validation
-		if (formData.createLogin) {
-			// No additional validation needed as we use default password
-			// The main email is already validated above and will be used for login
-		}
-
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -291,7 +315,6 @@ const FacultyFormModal = ({
 			const facultyData = {
 				...formData,
 				id: isEdit ? faculty.id : Date.now(),
-				// Use the main email as login email when creating login credentials
 				loginEmail: formData.createLogin ? formData.email : undefined,
 			};
 
