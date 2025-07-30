@@ -32,6 +32,7 @@ import AdminLayout from "../Components/Admin/Layout/AdminLayout";
 import FacultyFormModal from "../Components/Admin/Forms/FacultyFormModal";
 import FacultyViewModal from "../Components/Admin/Forms/FacultyViewModal";
 import { useFaculty } from "../hooks/useFaculty";
+import FacultyService from "../services/FacultyService";
 
 const FacultyManagement = () => {
 	// Use Faculty Context for dynamic data
@@ -135,15 +136,50 @@ const FacultyManagement = () => {
 
 	const handleSaveFaculty = async (facultyData) => {
 		try {
+			// Separate faculty data from login data
+			const {
+				createLogin,
+				loginEmail,
+				password,
+				confirmPassword,
+				// generatePassword, // not used in save operation
+				...facultyInfo
+			} = facultyData;
+			const loginData = {
+				createLogin,
+				loginEmail,
+				password,
+				confirmPassword,
+			};
+
 			if (editingFaculty) {
 				// Update existing faculty
-				await updateFaculty(editingFaculty.id, facultyData);
+				if (createLogin) {
+					await FacultyService.updateFacultyWithLogin(
+						editingFaculty.id,
+						facultyInfo,
+						loginData
+					);
+				} else {
+					await updateFaculty(editingFaculty.id, facultyInfo);
+				}
 			} else {
 				// Add new faculty
-				await createFaculty(facultyData);
+				if (createLogin) {
+					await FacultyService.createFacultyWithLogin(facultyInfo, loginData);
+				} else {
+					await createFaculty(facultyInfo);
+				}
 			}
+
 			setShowFormModal(false);
 			setEditingFaculty(null);
+
+			// Show success message
+			console.log(
+				"Faculty saved successfully" +
+					(createLogin ? " with login credentials" : "")
+			);
 		} catch (error) {
 			console.error("Error saving faculty:", error);
 			// Error will be handled by the context

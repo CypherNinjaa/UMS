@@ -89,7 +89,7 @@ const UserController = {
 				return res.status(401).json({ message: "Invalid credentials" });
 			}
 
-			//comparing password 
+			//comparing password
 			if (user.password !== password) {
 				return res.status(401).json({ message: "Invalid credentials" });
 			}
@@ -103,6 +103,31 @@ const UserController = {
 		} catch (error) {
 			console.log("Login error:", error);
 			res.status(500).json({ message: "Login failed. Please try again." });
+		}
+	},
+
+	// Get user by faculty ID
+	getUserByFacultyId: async (req, res) => {
+		try {
+			const { facultyId } = req.params;
+			const user = await Users.findOne({
+				where: { faculty_id: facultyId },
+				attributes: { exclude: ["password"] }, // Don't return password
+			});
+
+			if (!user) {
+				return res
+					.status(404)
+					.json({ message: "User not found for this faculty" });
+			}
+
+			res.status(200).json({
+				message: "User found",
+				user: user,
+			});
+		} catch (error) {
+			console.log("Get user by faculty ID error:", error);
+			res.status(500).json({ message: "Failed to get user by faculty ID" });
 		}
 	},
 };

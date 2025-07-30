@@ -34,6 +34,39 @@ class FacultyService {
 		}
 	}
 
+	// Create faculty with login credentials
+	static async createFacultyWithLogin(facultyData, loginData) {
+		try {
+			// First create the faculty member
+			const facultyResponse = await ApiService.post("/faculty", facultyData);
+
+			// If faculty creation is successful and login is requested, create user account
+			if (facultyResponse && loginData && loginData.createLogin) {
+				const userData = {
+					name: facultyData.name,
+					email: loginData.loginEmail,
+					mobile_no: facultyData.phone,
+					password: loginData.password,
+					role: "faculty",
+					faculty_id: facultyResponse.id, // Link to faculty record
+				};
+
+				try {
+					await ApiService.post("/users", userData);
+				} catch (userError) {
+					console.error("Error creating user account:", userError);
+					// Could add rollback logic here if needed
+					throw new Error("Faculty created but login account creation failed");
+				}
+			}
+
+			return facultyResponse;
+		} catch (error) {
+			console.error("Error creating faculty with login:", error);
+			throw error;
+		}
+	}
+
 	// Update faculty member
 	static async updateFaculty(id, facultyData) {
 		try {
@@ -41,6 +74,55 @@ class FacultyService {
 			return response;
 		} catch (error) {
 			console.error("Error updating faculty:", error);
+			throw error;
+		}
+	}
+
+	// Update faculty with login credentials
+	static async updateFacultyWithLogin(id, facultyData, loginData) {
+		try {
+			// First update the faculty member
+			const facultyResponse = await ApiService.put(
+				`/faculty/${id}`,
+				facultyData
+			);
+
+			// Handle login credentials if requested
+			if (loginData && loginData.createLogin) {
+				// Check if user already exists for this faculty
+				try {
+					const existingUser = await ApiService.get(`/users/faculty/${id}`);
+
+					if (existingUser) {
+						// Update existing user
+						const userData = {
+							name: facultyData.name,
+							email: loginData.loginEmail,
+							mobile_no: facultyData.phone,
+							password: loginData.password,
+						};
+						await ApiService.put(`/users/${existingUser.user_id}`, userData);
+					} else {
+						// Create new user
+						const userData = {
+							name: facultyData.name,
+							email: loginData.loginEmail,
+							mobile_no: facultyData.phone,
+							password: loginData.password,
+							role: "faculty",
+							faculty_id: id,
+						};
+						await ApiService.post("/users", userData);
+					}
+				} catch (userError) {
+					console.error("Error handling user account:", userError);
+					throw new Error("Faculty updated but login account update failed");
+				}
+			}
+
+			return facultyResponse;
+		} catch (error) {
+			console.error("Error updating faculty with login:", error);
 			throw error;
 		}
 	}
