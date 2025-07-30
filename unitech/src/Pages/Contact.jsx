@@ -8,6 +8,7 @@ const Contact = () => {
 		fullName: "",
 		email: "",
 		phone: "",
+		organisationName: "",
 		message: "",
 	});
 	const [activeTab, setActiveTab] = useState("course");
@@ -112,6 +113,21 @@ const Contact = () => {
 										required
 									/>
 								</Form.Group>
+
+								{/* Organisation Name field - only for Corporate Enquiry */}
+								{activeTab === "corporate" && (
+									<Form.Group className="mb-3">
+										<Form.Label>Organisation Name *</Form.Label>
+										<Form.Control
+											type="text"
+											name="organisationName"
+											value={formData.organisationName}
+											onChange={handleInputChange}
+											placeholder=""
+											required
+										/>
+									</Form.Group>
+								)}
 
 								<Form.Group className="mb-3">
 									<Form.Label>Phone Number *</Form.Label>

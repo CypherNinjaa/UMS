@@ -6,6 +6,7 @@ import "./App.css";
 import Navbar from "./Components/Common/Navbar/Navbar";
 import AuthProvider from "./contexts/AuthContext";
 import { FacultyProvider } from "./contexts/FacultyContext";
+import { ProgramProvider } from "./contexts/ProgramContext.jsx";
 import ProtectedRoute from "./Components/Common/ProtectedRoute";
 
 // pages components will imported here-
@@ -51,13 +52,13 @@ function App() {
 						<Route
 							path="/programs"
 							element={
-								<>
+								<ProgramProvider>
 									<Navbar />
 									<main className="main-content">
 										<Programs />
 									</main>
 									<Footer />
-								</>
+								</ProgramProvider>
 							}
 						/>
 						<Route
@@ -123,7 +124,9 @@ function App() {
 							path="/admin/programs"
 							element={
 								<ProtectedRoute allowedRoles={["admin"]}>
-									<ProgramManagement />
+									<ProgramProvider>
+										<ProgramManagement />
+									</ProgramProvider>
 								</ProtectedRoute>
 							}
 						/>

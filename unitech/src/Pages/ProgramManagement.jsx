@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Row,
 	Col,
@@ -13,6 +13,8 @@ import {
 	Tab,
 	Tabs,
 	ProgressBar,
+	Spinner,
+	Alert,
 } from "react-bootstrap";
 import {
 	FaPlus,
@@ -27,193 +29,264 @@ import {
 	FaUsers,
 	FaChartLine,
 	FaStar,
+	FaRegStar,
 } from "react-icons/fa";
 import AdminLayout from "../Components/Admin/Layout/AdminLayout";
+import ProgramFormModal from "../Components/Admin/Forms/ProgramFormModal";
+import ProgramViewModal from "../Components/Admin/Forms/ProgramViewModal";
+import { usePrograms } from "../hooks/usePrograms";
 
 const ProgramManagement = () => {
-	// Sample program data
-	const [programs, setPrograms] = useState([
-		{
-			id: 1,
-			name: "Bachelor of Computer Science",
-			code: "BCS",
-			type: "Undergraduate",
-			duration: "4 years",
-			credits: 120,
-			department: "Computer Science",
-			status: "Active",
-			enrollment: 145,
-			capacity: 200,
-			rating: 4.8,
-			faculty: ["Dr. Sarah Johnson", "Dr. Michael Chen"],
-			description:
-				"Comprehensive computer science program covering programming, algorithms, and software engineering.",
-			requirements: "High school diploma, Mathematics proficiency",
-			startDate: "2024-09-01",
-			featured: true,
-		},
-		{
-			id: 2,
-			name: "Master of Business Administration",
-			code: "MBA",
-			type: "Graduate",
-			duration: "2 years",
-			credits: 60,
-			department: "Business Administration",
-			status: "Active",
-			enrollment: 89,
-			capacity: 120,
-			rating: 4.6,
-			faculty: ["Dr. Michael Chen", "Dr. Lisa Zhang"],
-			description:
-				"Advanced business management program for aspiring leaders and entrepreneurs.",
-			requirements: "Bachelor's degree, 2 years work experience",
-			startDate: "2024-09-01",
-			featured: true,
-		},
-		{
-			id: 3,
-			name: "Bachelor of Biology",
-			code: "BB",
-			type: "Undergraduate",
-			duration: "4 years",
-			credits: 125,
-			department: "Biology",
-			status: "Active",
-			enrollment: 67,
-			capacity: 100,
-			rating: 4.5,
-			faculty: ["Dr. Emily Rodriguez"],
-			description:
-				"Comprehensive biology program with focus on genetics and biotechnology.",
-			requirements: "High school diploma, Science background",
-			startDate: "2024-09-01",
-			featured: false,
-		},
-		{
-			id: 4,
-			name: "Bachelor of Engineering",
-			code: "BE",
-			type: "Undergraduate",
-			duration: "4 years",
-			credits: 130,
-			department: "Engineering",
-			status: "Active",
-			enrollment: 112,
-			capacity: 150,
-			rating: 4.7,
-			faculty: ["Dr. James Wilson", "Dr. Robert Taylor"],
-			description:
-				"Engineering program specializing in robotics and automation systems.",
-			requirements: "High school diploma, Mathematics and Physics proficiency",
-			startDate: "2024-09-01",
-			featured: true,
-		},
-		{
-			id: 5,
-			name: "Master of International Relations",
-			code: "MIR",
-			type: "Graduate",
-			duration: "2 years",
-			credits: 48,
-			department: "Political Science",
-			status: "Active",
-			enrollment: 34,
-			capacity: 60,
-			rating: 4.4,
-			faculty: ["Dr. Lisa Zhang"],
-			description:
-				"Advanced program in international diplomacy and global politics.",
-			requirements: "Bachelor's degree in related field",
-			startDate: "2024-09-01",
-			featured: false,
-		},
-		{
-			id: 6,
-			name: "Certificate in Data Analytics",
-			code: "CDA",
-			type: "Certificate",
-			duration: "6 months",
-			credits: 24,
-			department: "Computer Science",
-			status: "Planning",
-			enrollment: 0,
-			capacity: 40,
-			rating: 0,
-			faculty: ["Dr. Sarah Johnson", "Dr. Robert Taylor"],
-			description:
-				"Intensive program covering data analysis, visualization, and machine learning basics.",
-			requirements: "Basic programming knowledge",
-			startDate: "2025-01-15",
-			featured: false,
-		},
-	]);
+	// Use Program Context for dynamic data
+	const {
+		programs,
+		departments,
+		statistics,
+		loading,
+		error,
+		filters,
+		// sorting, // unused for now
+		actions,
+	} = usePrograms();
 
-	const [searchTerm, setSearchTerm] = useState("");
-	const [selectedType, setSelectedType] = useState("All");
-	const [selectedDepartment, setSelectedDepartment] = useState("All");
-	const [selectedStatus, setSelectedStatus] = useState("All");
+	// Extract action functions
+	const {
+		fetchPrograms,
+		fetchDepartments,
+		fetchStatistics,
+		createProgram,
+		updateProgram,
+		deleteProgram,
+		bulkDeletePrograms,
+		toggleFeatured,
+		clearError,
+	} = actions;
+
+	// Local state for UI interactions
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showFormModal, setShowFormModal] = useState(false);
+	const [showViewModal, setShowViewModal] = useState(false);
 	const [showDetailsModal, setShowDetailsModal] = useState(false);
 	const [selectedProgram, setSelectedProgram] = useState(null);
+	// const [editingProgram, setEditingProgram] = useState(null); // unused - using selectedProgram instead
+	const [isEditing, setIsEditing] = useState(false);
+	const [selectedProgramIds, setSelectedProgramIds] = useState([]);
+	const [localSearchTerm, setLocalSearchTerm] = useState(filters.search);
+	const [localType, setLocalType] = useState(filters.type);
+	const [localDepartment, setLocalDepartment] = useState(filters.department);
+	const [localStatus, setLocalStatus] = useState(filters.status);
 	const [activeTab, setActiveTab] = useState("overview");
 
-	// Get unique values for filters
+	// Program types for filtering
 	const programTypes = [
 		"All",
-		...new Set(programs.map((program) => program.type)),
-	];
-	const departments = [
-		"All",
-		...new Set(programs.map((program) => program.department)),
-	];
-	const statuses = [
-		"All",
-		...new Set(programs.map((program) => program.status)),
+		"Undergraduate",
+		"Graduate",
+		"Certificate",
+		"Diploma",
+		"Doctorate",
 	];
 
-	// Filter programs
+	// Program statuses for filtering
+	const statuses = [
+		"All",
+		"Active",
+		"Planning",
+		"Suspended",
+		"Completed",
+		"Inactive",
+	];
+
+	// Filter programs based on local filters (client-side filtering for better performance)
 	const filteredPrograms = programs.filter((program) => {
 		const matchesSearch =
-			program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			program.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			program.department.toLowerCase().includes(searchTerm.toLowerCase());
-		const matchesType = selectedType === "All" || program.type === selectedType;
+			localSearchTerm === "" ||
+			program.name.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			program.code.toLowerCase().includes(localSearchTerm.toLowerCase()) ||
+			program.department
+				.toLowerCase()
+				.includes(localSearchTerm.toLowerCase()) ||
+			program.description.toLowerCase().includes(localSearchTerm.toLowerCase());
+		const matchesType = localType === "All" || program.type === localType;
 		const matchesDepartment =
-			selectedDepartment === "All" || program.department === selectedDepartment;
+			localDepartment === "All" || program.department === localDepartment;
 		const matchesStatus =
-			selectedStatus === "All" || program.status === selectedStatus;
+			localStatus === "All" || program.status === localStatus;
 
 		return matchesSearch && matchesType && matchesDepartment && matchesStatus;
 	});
 
-	const handleDelete = (program) => {
-		setSelectedProgram(program);
-		setShowDeleteModal(true);
-	};
-
-	const handleViewDetails = (program) => {
-		setSelectedProgram(program);
-		setShowDetailsModal(true);
-	};
-
-	const confirmDelete = () => {
-		setPrograms(
-			programs.filter((program) => program.id !== selectedProgram.id)
+	// Debug: Check for duplicate keys
+	React.useEffect(() => {
+		const keys = filteredPrograms.map(
+			(program, index) =>
+				program.id || program.program_id || program.code || `fallback-${index}`
 		);
-		setShowDeleteModal(false);
+		const uniqueKeys = new Set(keys);
+		if (keys.length !== uniqueKeys.size) {
+			console.warn("Duplicate keys detected in filteredPrograms:", keys);
+		}
+	}, [filteredPrograms]);
+
+	// Load data on component mount
+	useEffect(() => {
+		fetchPrograms({
+			search: "",
+			department: "All",
+			type: "All",
+			status: "All",
+			page: 1,
+			limit: 100, // Fetch more data at once to reduce API calls
+		});
+		fetchDepartments();
+		fetchStatistics();
+	}, [fetchPrograms, fetchDepartments, fetchStatistics]);
+
+	// Unused legacy handlers - kept for compatibility
+	// const handleDelete = (program) => {
+	// 	setSelectedProgram(program);
+	// 	setShowDeleteModal(true);
+	// };
+
+	// const handleViewDetails = (program) => {
+	// 	setSelectedProgram(program);
+	// 	setShowDetailsModal(true);
+	// };
+
+	// const handleEdit = (program) => {
+	// 	setEditingProgram(program);
+	// 	setShowFormModal(true);
+	// };
+
+	const handleAddNew = () => {
 		setSelectedProgram(null);
+		setIsEditing(false);
+		setShowFormModal(true);
 	};
 
-	const getStatusBadge = (status) => {
-		const variants = {
-			Active: "success",
-			Planning: "warning",
-			Suspended: "danger",
-			Completed: "secondary",
-		};
-		return <Badge bg={variants[status] || "secondary"}>{status}</Badge>;
+	// const handleEditFromView = (program) => {
+	// 	setShowDetailsModal(false);
+	// 	setEditingProgram(program);
+	// 	setShowFormModal(true);
+	// };
+
+	// const handleSaveProgram = async (programData) => {
+	// 	try {
+	// 		if (editingProgram) {
+	// 			// Update existing program
+	// 			await updateProgram(editingProgram.id, programData);
+	// 		} else {
+	// 			// Add new program
+	// 			await createProgram(programData);
+	// 		}
+	// 		setShowFormModal(false);
+	// 		setEditingProgram(null);
+	// 	} catch (error) {
+	// 		console.error("Error saving program:", error);
+	// 		// Error will be handled by the context
+	// 	}
+	// };
+
+	const confirmDelete = async () => {
+		try {
+			if (selectedProgramIds.length > 0) {
+				await bulkDeletePrograms(selectedProgramIds);
+				setSelectedProgramIds([]);
+			} else if (selectedProgram) {
+				await deleteProgram(selectedProgram.program_id);
+			}
+			setShowDeleteModal(false);
+			setSelectedProgram(null);
+		} catch (error) {
+			console.error("Error deleting program:", error);
+		}
 	};
+
+	// Additional handler functions for table interactions
+	const handleSelectProgram = (programId) => {
+		setSelectedProgramIds((prev) =>
+			prev.includes(programId)
+				? prev.filter((id) => id !== programId)
+				: [...prev, programId]
+		);
+	};
+
+	const handleSelectAll = () => {
+		if (selectedProgramIds.length === filteredPrograms.length) {
+			setSelectedProgramIds([]);
+		} else {
+			setSelectedProgramIds(filteredPrograms.map((p) => p.program_id));
+		}
+	};
+
+	const handleViewProgram = (program) => {
+		setSelectedProgram(program);
+		setShowViewModal(true);
+	};
+
+	const handleEditProgram = (program) => {
+		setSelectedProgram(program);
+		setIsEditing(true);
+		setShowFormModal(true);
+	};
+
+	const handleDeleteProgram = async (programId) => {
+		if (window.confirm("Are you sure you want to delete this program?")) {
+			await deleteProgram(programId);
+		}
+	};
+
+	const handleBulkDelete = async () => {
+		if (selectedProgramIds.length === 0) return;
+
+		if (
+			window.confirm(
+				`Are you sure you want to delete ${selectedProgramIds.length} selected programs?`
+			)
+		) {
+			await bulkDeletePrograms(selectedProgramIds);
+			setSelectedProgramIds([]);
+		}
+	};
+
+	const refreshPrograms = () => {
+		fetchPrograms();
+	};
+
+	// const handleToggleFeatured = async (program) => {
+	// 	try {
+	// 		await toggleFeatured(program.id);
+	// 	} catch (error) {
+	// 		console.error("Error toggling featured status:", error);
+	// 	}
+	// };
+
+	// const handleSelectForBulkDelete = (programId) => {
+	// 	setSelectedProgramIds((prev) =>
+	// 		prev.includes(programId)
+	// 			? prev.filter((id) => id !== programId)
+	// 			: [...prev, programId]
+	// 	);
+	// };
+
+	// const handleSelectAllForBulkDelete = () => {
+	// 	if (selectedProgramIds.length === filteredPrograms.length) {
+	// 		setSelectedProgramIds([]);
+	// 	} else {
+	// 		setSelectedProgramIds(filteredPrograms.map((p) => p.program_id));
+	// 	}
+	// };
+
+	// const getStatusBadge = (status) => {
+	// 	const variants = {
+	// 		Active: "success",
+	// 		Planning: "warning",
+	// 		Suspended: "danger",
+	// 		Completed: "secondary",
+	// 		Inactive: "secondary",
+	// 	};
+	// 	return <Badge bg={variants[status] || "secondary"}>{status}</Badge>;
+	// };
 
 	const getTypeBadge = (type) => {
 		const variants = {
@@ -221,6 +294,7 @@ const ProgramManagement = () => {
 			Graduate: "info",
 			Certificate: "warning",
 			Diploma: "secondary",
+			Doctorate: "dark",
 		};
 		return <Badge bg={variants[type] || "secondary"}>{type}</Badge>;
 	};
@@ -235,13 +309,6 @@ const ProgramManagement = () => {
 		return "success";
 	};
 
-	// Calculate statistics
-	const totalPrograms = programs.length;
-	const activePrograms = programs.filter((p) => p.status === "Active").length;
-	const totalEnrollment = programs.reduce((sum, p) => sum + p.enrollment, 0);
-	const averageRating =
-		programs.reduce((sum, p) => sum + p.rating, 0) / programs.length;
-
 	return (
 		<AdminLayout>
 			<div className="program-management">
@@ -255,7 +322,17 @@ const ProgramManagement = () => {
 							</p>
 						</Col>
 						<Col xs="auto">
-							<Button variant="primary" className="me-2">
+							{selectedProgramIds.length > 0 && (
+								<Button
+									variant="danger"
+									className="me-2"
+									onClick={handleBulkDelete}
+								>
+									<FaTrash className="me-2" />
+									Delete Selected ({selectedProgramIds.length})
+								</Button>
+							)}
+							<Button variant="primary" className="me-2" onClick={handleAddNew}>
 								<FaPlus className="me-2" />
 								Add Program
 							</Button>
@@ -267,6 +344,18 @@ const ProgramManagement = () => {
 					</Row>
 				</div>
 
+				{/* Error Alert */}
+				{error && (
+					<Alert
+						variant="danger"
+						className="mb-4"
+						dismissible
+						onClose={clearError}
+					>
+						<strong>Error:</strong> {error}
+					</Alert>
+				)}
+
 				{/* Statistics Cards */}
 				<Row className="mb-4">
 					<Col md={3}>
@@ -276,7 +365,7 @@ const ProgramManagement = () => {
 									className="stats-icon text-primary mb-2"
 									size={24}
 								/>
-								<h3 className="mb-0">{totalPrograms}</h3>
+								<h3 className="mb-0">{statistics.totalPrograms}</h3>
 								<p className="text-muted mb-0">Total Programs</p>
 							</Card.Body>
 						</Card>
@@ -288,7 +377,7 @@ const ProgramManagement = () => {
 									className="stats-icon text-success mb-2"
 									size={24}
 								/>
-								<h3 className="mb-0">{activePrograms}</h3>
+								<h3 className="mb-0">{statistics.activePrograms}</h3>
 								<p className="text-muted mb-0">Active Programs</p>
 							</Card.Body>
 						</Card>
@@ -297,7 +386,7 @@ const ProgramManagement = () => {
 						<Card className="stats-card">
 							<Card.Body className="text-center">
 								<FaUsers className="stats-icon text-info mb-2" size={24} />
-								<h3 className="mb-0">{totalEnrollment}</h3>
+								<h3 className="mb-0">{statistics.totalEnrollment}</h3>
 								<p className="text-muted mb-0">Total Enrollment</p>
 							</Card.Body>
 						</Card>
@@ -306,7 +395,7 @@ const ProgramManagement = () => {
 						<Card className="stats-card">
 							<Card.Body className="text-center">
 								<FaStar className="stats-icon text-warning mb-2" size={24} />
-								<h3 className="mb-0">{averageRating.toFixed(1)}</h3>
+								<h3 className="mb-0">{statistics.averageRating}</h3>
 								<p className="text-muted mb-0">Average Rating</p>
 							</Card.Body>
 						</Card>
@@ -325,15 +414,15 @@ const ProgramManagement = () => {
 									<Form.Control
 										type="text"
 										placeholder="Search programs by name, code, or department..."
-										value={searchTerm}
-										onChange={(e) => setSearchTerm(e.target.value)}
+										value={localSearchTerm}
+										onChange={(e) => setLocalSearchTerm(e.target.value)}
 									/>
 								</InputGroup>
 							</Col>
 							<Col md={2}>
 								<Form.Select
-									value={selectedType}
-									onChange={(e) => setSelectedType(e.target.value)}
+									value={localType}
+									onChange={(e) => setLocalType(e.target.value)}
 								>
 									{programTypes.map((type) => (
 										<option key={type} value={type}>
@@ -344,8 +433,8 @@ const ProgramManagement = () => {
 							</Col>
 							<Col md={2}>
 								<Form.Select
-									value={selectedDepartment}
-									onChange={(e) => setSelectedDepartment(e.target.value)}
+									value={localDepartment}
+									onChange={(e) => setLocalDepartment(e.target.value)}
 								>
 									{departments.map((department) => (
 										<option key={department} value={department}>
@@ -356,8 +445,8 @@ const ProgramManagement = () => {
 							</Col>
 							<Col md={2}>
 								<Form.Select
-									value={selectedStatus}
-									onChange={(e) => setSelectedStatus(e.target.value)}
+									value={localStatus}
+									onChange={(e) => setLocalStatus(e.target.value)}
 								>
 									{statuses.map((status) => (
 										<option key={status} value={status}>
@@ -382,132 +471,243 @@ const ProgramManagement = () => {
 				{/* Programs Table */}
 				<Card>
 					<Card.Body className="p-0">
-						<Table responsive hover className="mb-0">
-							<thead className="bg-light">
-								<tr>
-									<th>Program</th>
-									<th>Type & Duration</th>
-									<th>Department</th>
-									<th>Enrollment</th>
-									<th>Rating</th>
-									<th>Status</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{filteredPrograms.map((program) => {
-									const enrollmentPercent = getEnrollmentPercentage(
-										program.enrollment,
-										program.capacity
-									);
-									return (
-										<tr key={program.id}>
-											<td>
-												<div>
-													<div className="fw-semibold d-flex align-items-center">
-														{program.name}
-														{program.featured && (
-															<Badge bg="warning" size="sm" className="ms-2">
-																Featured
-															</Badge>
-														)}
-													</div>
-													<div className="text-muted small">
-														{program.code} • {program.credits} Credits
-													</div>
-												</div>
-											</td>
-											<td>
-												<div>
-													{getTypeBadge(program.type)}
-													<div className="text-muted small mt-1">
-														<FaClock className="me-1" />
-														{program.duration}
-													</div>
-												</div>
-											</td>
-											<td>
-												<Badge bg="secondary">{program.department}</Badge>
-											</td>
-											<td>
-												<div>
-													<div className="small">
-														{program.enrollment} / {program.capacity} students
-													</div>
-													<ProgressBar
-														variant={getEnrollmentVariant(enrollmentPercent)}
-														now={enrollmentPercent}
-														size="sm"
-														className="mt-1"
-													/>
-													<div className="text-muted small">
-														{enrollmentPercent}% full
-													</div>
-												</div>
-											</td>
-											<td>
-												<div className="d-flex align-items-center">
-													<FaStar className="text-warning me-1" />
-													<span>
-														{program.rating > 0
-															? program.rating.toFixed(1)
-															: "N/A"}
-													</span>
-												</div>
-											</td>
-											<td>{getStatusBadge(program.status)}</td>
-											<td>
-												<Dropdown>
-													<Dropdown.Toggle
-														variant="outline-secondary"
-														size="sm"
-														id={`dropdown-${program.id}`}
-													>
-														Actions
-													</Dropdown.Toggle>
-													<Dropdown.Menu>
-														<Dropdown.Item
-															onClick={() => handleViewDetails(program)}
-														>
-															<FaEye className="me-2" />
-															View Details
-														</Dropdown.Item>
-														<Dropdown.Item>
-															<FaEdit className="me-2" />
-															Edit Program
-														</Dropdown.Item>
-														<Dropdown.Item>
-															<FaUsers className="me-2" />
-															Manage Enrollment
-														</Dropdown.Item>
-														<Dropdown.Divider />
-														<Dropdown.Item
-															className="text-danger"
-															onClick={() => handleDelete(program)}
-														>
-															<FaTrash className="me-2" />
-															Delete
-														</Dropdown.Item>
-													</Dropdown.Menu>
-												</Dropdown>
-											</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</Table>
-
-						{filteredPrograms.length === 0 && (
+						{loading ? (
+							<div className="text-center p-4">
+								<div className="spinner-border text-primary" role="status">
+									<span className="visually-hidden">Loading...</span>
+								</div>
+								<p className="mt-2">Loading programs...</p>
+							</div>
+						) : error ? (
+							<div className="text-center p-4">
+								<div className="alert alert-danger">
+									<p className="mb-0">Error: {error}</p>
+									<Button
+										variant="outline-primary"
+										size="sm"
+										className="mt-2"
+										onClick={refreshPrograms}
+									>
+										Try Again
+									</Button>
+								</div>
+							</div>
+						) : filteredPrograms.length === 0 ? (
 							<div className="text-center py-5">
 								<h5>No programs found</h5>
 								<p className="text-muted">
 									Try adjusting your search criteria or add a new program.
 								</p>
-								<Button variant="primary">
+								<Button
+									variant="primary"
+									onClick={() => setShowFormModal(true)}
+								>
 									<FaPlus className="me-2" />
 									Add First Program
 								</Button>
 							</div>
+						) : (
+							<Table responsive hover className="mb-0">
+								<thead className="bg-light">
+									<tr>
+										<th>
+											<Form.Check
+												type="checkbox"
+												checked={
+													selectedProgramIds.length ===
+														filteredPrograms.length &&
+													filteredPrograms.length > 0
+												}
+												onChange={handleSelectAll}
+											/>
+										</th>
+										<th>Program</th>
+										<th>Type & Duration</th>
+										<th>Department</th>
+										<th>Enrollment</th>
+										<th>Rating</th>
+										<th>Status</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+									{filteredPrograms.map((program, index) => {
+										// Debug: Log if we have issues with keys
+										if (!program.id && !program.program_id && !program.code) {
+											console.warn(
+												"Program missing ID fields:",
+												program,
+												"index:",
+												index
+											);
+										}
+
+										const enrollmentPercent =
+											program.max_enrollment > 0
+												? Math.round(
+														(program.current_enrollment /
+															program.max_enrollment) *
+															100
+												  )
+												: 0;
+
+										// Create a unique key from multiple possible ID fields
+										const uniqueKey =
+											program.id ||
+											program.program_id ||
+											program.code ||
+											`fallback-${index}`;
+
+										return (
+											<tr key={uniqueKey}>
+												<td>
+													<Form.Check
+														type="checkbox"
+														checked={selectedProgramIds.includes(
+															program.program_id
+														)}
+														onChange={() =>
+															handleSelectProgram(program.program_id)
+														}
+													/>
+												</td>
+												<td>
+													<div>
+														<div className="fw-semibold d-flex align-items-center">
+															{program.program_name}
+															{program.is_featured && (
+																<Badge bg="warning" size="sm" className="ms-2">
+																	Featured
+																</Badge>
+															)}
+														</div>
+														<div className="text-muted small">
+															{program.program_code} • {program.total_credits}{" "}
+															Credits
+														</div>
+													</div>
+												</td>
+												<td>
+													<div>
+														<Badge bg="info" className="text-capitalize">
+															{program.program_type}
+														</Badge>
+														<div className="text-muted small mt-1">
+															<FaClock className="me-1" />
+															{program.duration_years} year
+															{program.duration_years > 1 ? "s" : ""}
+															{program.duration_months > 0 &&
+																` ${program.duration_months} month${
+																	program.duration_months > 1 ? "s" : ""
+																}`}
+														</div>
+													</div>
+												</td>
+												<td>
+													<Badge bg="secondary">{program.department}</Badge>
+												</td>
+												<td>
+													<div>
+														<div className="small">
+															{program.current_enrollment} /{" "}
+															{program.max_enrollment} students
+														</div>
+														<ProgressBar
+															variant={
+																enrollmentPercent >= 90
+																	? "danger"
+																	: enrollmentPercent >= 70
+																	? "warning"
+																	: "success"
+															}
+															now={enrollmentPercent}
+															size="sm"
+															className="mt-1"
+														/>
+														<div className="text-muted small">
+															{enrollmentPercent}% full
+														</div>
+													</div>
+												</td>
+												<td>
+													<div className="d-flex align-items-center">
+														<FaStar className="text-warning me-1" />
+														<span>
+															{program.rating && program.rating > 0
+																? program.rating.toFixed(1)
+																: "N/A"}
+														</span>
+													</div>
+												</td>
+												<td>
+													<Badge
+														bg={
+															program.status === "Active"
+																? "success"
+																: program.status === "Inactive"
+																? "danger"
+																: "warning"
+														}
+													>
+														{program.status}
+													</Badge>
+												</td>
+												<td>
+													<Dropdown>
+														<Dropdown.Toggle
+															variant="outline-secondary"
+															size="sm"
+															id={`dropdown-${program.program_id}`}
+														>
+															Actions
+														</Dropdown.Toggle>
+														<Dropdown.Menu>
+															<Dropdown.Item
+																key={`view-${program.program_id}`}
+																onClick={() => handleViewProgram(program)}
+															>
+																<FaEye className="me-2" />
+																View Details
+															</Dropdown.Item>
+															<Dropdown.Item
+																key={`edit-${program.program_id}`}
+																onClick={() => handleEditProgram(program)}
+															>
+																<FaEdit className="me-2" />
+																Edit Program
+															</Dropdown.Item>
+															<Dropdown.Item
+																key={`featured-${program.program_id}`}
+																onClick={() =>
+																	toggleFeatured(program.program_id)
+																}
+															>
+																<FaStar className="me-2" />
+																{program.is_featured
+																	? "Remove Featured"
+																	: "Mark Featured"}
+															</Dropdown.Item>
+															<Dropdown.Divider
+																key={`divider-${program.program_id}`}
+															/>
+															<Dropdown.Item
+																key={`delete-${program.program_id}`}
+																className="text-danger"
+																onClick={() =>
+																	handleDeleteProgram(program.program_id)
+																}
+															>
+																<FaTrash className="me-2" />
+																Delete
+															</Dropdown.Item>
+														</Dropdown.Menu>
+													</Dropdown>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</Table>
 						)}
 					</Card.Body>
 				</Card>
@@ -600,14 +800,22 @@ const ProgramManagement = () => {
 								</Tab>
 								<Tab eventKey="faculty" title="Faculty">
 									<h6>Assigned Faculty</h6>
-									{selectedProgram.faculty.map((facultyName, index) => (
-										<div key={index} className="d-flex align-items-center mb-2">
-											<Badge bg="primary" className="me-2">
-												{index + 1}
-											</Badge>
-											{facultyName}
-										</div>
-									))}
+									{selectedProgram.faculty &&
+									selectedProgram.faculty.length > 0 ? (
+										selectedProgram.faculty.map((facultyName, index) => (
+											<div
+												key={`faculty-${index}-${facultyName}`}
+												className="d-flex align-items-center mb-2"
+											>
+												<Badge bg="primary" className="me-2">
+													{index + 1}
+												</Badge>
+												{facultyName}
+											</div>
+										))
+									) : (
+										<p className="text-muted">No faculty assigned</p>
+									)}
 								</Tab>
 								<Tab eventKey="requirements" title="Requirements">
 									<h6>Admission Requirements</h6>
@@ -670,6 +878,47 @@ const ProgramManagement = () => {
 						</Button>
 					</Modal.Footer>
 				</Modal>
+
+				{/* Program Form Modal */}
+				<ProgramFormModal
+					show={showFormModal}
+					onHide={() => {
+						setShowFormModal(false);
+						setSelectedProgram(null);
+						setIsEditing(false);
+					}}
+					program={isEditing ? selectedProgram : null}
+					onSave={async (programData) => {
+						try {
+							if (isEditing) {
+								await updateProgram(selectedProgram.program_id, programData);
+							} else {
+								await createProgram(programData);
+							}
+							setShowFormModal(false);
+							setSelectedProgram(null);
+							setIsEditing(false);
+						} catch (error) {
+							console.error("Error saving program:", error);
+						}
+					}}
+				/>
+
+				{/* Program View Modal */}
+				<ProgramViewModal
+					show={showViewModal}
+					onHide={() => {
+						setShowViewModal(false);
+						setSelectedProgram(null);
+					}}
+					program={selectedProgram}
+					onEdit={(program) => {
+						setShowViewModal(false);
+						setSelectedProgram(program);
+						setIsEditing(true);
+						setShowFormModal(true);
+					}}
+				/>
 			</div>
 		</AdminLayout>
 	);
