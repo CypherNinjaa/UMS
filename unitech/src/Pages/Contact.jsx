@@ -45,11 +45,11 @@ const Contact = () => {
 							<div className="contact-details">
 								<div className="contact-item">
 									<span className="contact-icon">✉</span>
-									<span>support@EduVerse.com</span>
+									<span>hariom.21242@gmail.com</span>
 								</div>
 								<div className="contact-item">
 									<span className="contact-icon">📞</span>
-									<span>+91 1234567890</span>
+									<span>+91 8294447219</span>
 								</div>
 							</div>
 
