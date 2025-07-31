@@ -534,7 +534,7 @@ const StudentFormModal = ({
 									value={formData.phone}
 									onChange={handlePhoneInputChange}
 									isInvalid={!!errors.phone}
-									placeholder="+1-555-0000"
+									placeholder="+911234567890"
 								/>
 								<Form.Text className="text-muted">
 									Numbers, spaces, hyphens, and parentheses allowed
@@ -746,7 +746,7 @@ const StudentFormModal = ({
 									value={formData.guardianPhone}
 									onChange={handlePhoneInputChange}
 									isInvalid={!!errors.guardianPhone}
-									placeholder="+1-555-0000"
+									placeholder="+911234567890"
 								/>
 								<Form.Text className="text-muted">
 									Numbers, spaces, hyphens, and parentheses allowed
