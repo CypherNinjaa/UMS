@@ -16,6 +16,7 @@ import Contact from "./Pages/Contact";
 import Faculty from "./Pages/Faculty";
 import Programs from "./Pages/Programs";
 import About from "./Pages/About";
+import Facilities from "./Pages/Facilities";
 import Login from "./Pages/Login";
 import Footer from "../src/Components/Common/Footer";
 
@@ -73,6 +74,18 @@ function App() {
 									</main>
 									<Footer />
 								</FacultyProvider>
+							}
+						/>
+						<Route
+							path="/facilities"
+							element={
+								<>
+									<Navbar />
+									<main className="main-content">
+										<Facilities />
+									</main>
+									<Footer />
+								</>
 							}
 						/>
 						<Route
