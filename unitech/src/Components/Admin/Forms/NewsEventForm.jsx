@@ -106,7 +106,7 @@ const NewsEventForm = ({
 		}
 	}, [show, editData]);
 
-	// Strict validation handlers for text-only fields
+	//only allow text input for title, author, and category
 	const handleTextInputChange = (e) => {
 		const { name, value } = e.target;
 		// Allow only letters, spaces, hyphens, apostrophes, and dots
